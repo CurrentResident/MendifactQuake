@@ -1,0 +1,41 @@
+../progs.dat
+
+defs.qc
+subs.qc
+fight.qc
+ai.qc
+combat.qc
+items.qc
+weapons.qc
+world.qc
+client.qc
+player.qc
+runes10.qc //Rune Serv runes #1-10 code
+runes20.qc //Rune Serv runes #11-20 code
+runes30.qc //Rune Serv runes #21-30 code
+runes40.qc //Rune Serv runes #31-40 code
+runeserv.qc //Rune Serv code
+camera.qc //Temporary chase cam
+monsters.qc
+doors.qc
+buttons.qc
+triggers.qc
+plats.qc
+misc.qc
+
+ogre.qc
+demon.qc
+shambler.qc
+knight.qc
+soldier.qc
+wizard.qc
+dog.qc
+zombie.qc
+boss.qc
+
+tarbaby.qc		// registered
+hknight.qc		// registered
+fish.qc			// registered
+shalrath.qc		// registered
+enforcer.qc		// registered
+oldone.qc		// registered
