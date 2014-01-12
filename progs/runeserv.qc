@@ -73,6 +73,7 @@ void() Rune_Button =
    else if (self.runetype == RN_SHAMB) Rune_ShamblerReloc();
    else if (self.runetype == RN_DUAL) Rune_Dual();
    else if (self.runetype == RN_WEIRD) Weird_Throw();
+   else if (self.runetype == RN_IMPACT)  Rune_Impact ();
 };
 
 void() Rune_Tell =
@@ -251,7 +252,8 @@ void() MOTD =
       self.motd_count = self.motd_count + 1;
 
       if (deathmatch)
-            centerprint(self,"Aòôéæáãô Qõáëå 2.1\n€ƒƒƒƒƒƒƒƒ‚\nCollect a rune, get an ability!\n\nIMPULSE “’’ MUST BE BOUND.\nIMPULSE ›› shows your current rune.\nIMPULSE ›š deactivates your rune.\nƒƒ\nWritten by ÓéÎÇÅ\nE-mail: singe@ix.netcom.com\n€ƒƒƒƒƒƒƒƒ‚");
+//            centerprint(self,"Aòôéæáãô Qõáëå 2.1\n€ƒƒƒƒƒƒƒƒ‚\nCollect a rune, get an ability!\n\nIMPULSE “’’ MUST BE BOUND.\nIMPULSE ›› shows your current rune.\nIMPULSE ›š deactivates your rune.\nƒƒ\nWritten by ÓéÎÇÅ\nE-mail: singe@ix.netcom.com\n€ƒƒƒƒƒƒƒƒ‚");
+            centerprint (self, "Artifact Quake  -\nby Singe <singe@ix.netcom.com> \n\nthis server is run and modified by \nMendicant-  jjt@umr.edu"); 
    }
 };
 
