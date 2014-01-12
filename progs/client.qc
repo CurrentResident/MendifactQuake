@@ -426,10 +426,18 @@ ClientKill
 Player entered the suicide command
 ============
 */
+
+void (entity tog) Rune_Ghost_Toggle;
+
 void() ClientKill =
 {
 
 	bprint (self.netname);
+
+	if (self.miscent.runetype == RN_GHOST && self.miscent.runevar > 0
+		&& self.miscent.runent == self)
+		Rune_Ghost_Toggle (self.miscent);
+	
 	bprint (" suicides\n");
 	set_suicide_frame ();
 	self.modelindex = modelindex_player;
@@ -549,6 +557,9 @@ void() PutClientInServer =
         self.runetime = time;
         self.runevar = 0;
         self.runevector = '0 0 0';
+
+	self.miscflag = 0;
+	self.miscent = world;
 
 	DecodeLevelParms ();
 	
@@ -789,6 +800,10 @@ void() PlayerJump =
 	local vector start, end;
 	
 	if (self.flags & FL_WATERJUMP)
+		return;
+
+	if (self.miscent.runetype == RN_GHOST && self.miscent.runevar > 0
+		&& self.miscent.runent == self)
 		return;
 	
 	if (self.waterlevel >= 2)
@@ -1782,9 +1797,19 @@ void(entity targ, entity attacker) ClientObituary =
 
 			// in-water deaths
 			rnum = targ.watertype;
+			// RSERV Egon rune cases
+			//
 			if (rnum == -3)
 			{
-				if (random() < 0.5)
+				if (targ.miscent.runetype == RN_GHOST)
+					{
+					bprint (" had his head held under by ");
+					bprint (targ.miscent.netname);
+					bprint ("\n");
+					targ.miscent.frags =targ.miscent.frags+1;
+					targ.frags = targ.frags + 1;
+					}
+				else if (random() < 0.5)
 					bprint (" sleeps with the fishes\n");
 				else
 					bprint (" sucks it down\n");
@@ -1792,7 +1817,15 @@ void(entity targ, entity attacker) ClientObituary =
 			}
 			else if (rnum == -4)
 			{
-				if (random() < 0.5)
+				if (targ.miscent.runetype == RN_GHOST)
+					{
+					bprint(" was fed acid soup by ");
+					bprint (targ.miscent.netname);
+					bprint ("\n");
+					targ.miscent.frags =targ.miscent.frags+1;
+					targ.frags = targ.frags + 1;
+					}
+				else if (random() < 0.5)
 					bprint (" gulped a load of slime\n");
 				else
 					bprint (" can't exist on slime alone\n");
@@ -1800,12 +1833,20 @@ void(entity targ, entity attacker) ClientObituary =
 			}
 			else if (rnum == -5)
 			{
-				if (targ.health < -15)
+				if (targ.miscent.runetype == RN_GHOST)
+					{
+					bprint(" was dunked in the hottub by ");
+					bprint (targ.miscent.netname);
+					bprint ("\n");
+					targ.miscent.frags =targ.miscent.frags+1;
+					targ.frags = targ.frags + 1;
+					}
+				else if (targ.health < -15)
 				{
 					bprint (" burst into flames\n");
 					return;
 				}
-				if (random() < 0.5)
+				else if (random() < 0.5)
 					bprint (" turned into hot slag\n");
 				else
 					bprint (" visits the Volcano God\n");
@@ -1815,8 +1856,19 @@ void(entity targ, entity attacker) ClientObituary =
 			// fell to their death?
 			if (targ.deathtype == "falling")
 			{
-				targ.deathtype = "";
-				bprint (" fell to his death\n");
+				if (targ.miscent.runetype == RN_GHOST)
+					{
+					bprint(" got banged really hard by ");
+					bprint (targ.miscent.netname);
+					bprint ("\n");
+					targ.miscent.frags =targ.miscent.frags+1;
+					targ.frags = targ.frags + 1;
+					}
+				else
+					{
+					targ.deathtype = "";
+					bprint (" fell to his death\n");
+					}
 				return;
 			}
 

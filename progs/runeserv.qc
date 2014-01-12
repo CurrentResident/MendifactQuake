@@ -52,6 +52,7 @@ void() Rune_Think =
    if (self.runetype == RN_WEIRD) Rune_Weird(); else
    if (self.runetype == RN_BERSERK) Berserk_Bleed(); else
    if (self.runetype == RN_PHASE) Wall_Check(); else
+   if (self.runetype == RN_GHOST) Rune_Ghost_Hold ();
    return;
 };
 
@@ -74,6 +75,7 @@ void() Rune_Button =
    else if (self.runetype == RN_DUAL) Rune_Dual();
    else if (self.runetype == RN_WEIRD) Weird_Throw();
    else if (self.runetype == RN_IMPACT)  Rune_Impact ();
+   else if (self.runetype == RN_GHOST)  Rune_Ghost_Button ();
 };
 
 void() Rune_Tell =
@@ -154,6 +156,8 @@ void() Rune_Tell =
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Berserker Rune \nŸ\n");
    else if (self.runetype == RN_PHASE)
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Phased Rune \nŸ\n");
+   else if (self.runetype == RN_GHOST)
+      centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Egon Rune \nŸ\n");
 };
 
 void() Rune_Activate =
@@ -188,6 +192,7 @@ void() Rune_Activate =
    else if (self.runetype == RN_PHOENIX) self.runevar = 3;
    else if (self.runetype == RN_CLOAK) Rune_Cloak();
    else if (self.runetype == RN_IMPACT) self.touch = Impact_Touch;
+   else if (self.runetype == RN_GHOST) self.runevar = 0;
    Rune_Tell();
 };
 
