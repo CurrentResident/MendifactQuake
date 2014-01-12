@@ -732,3 +732,105 @@ void () Rune_Ghost_Hold =
 		Rune_Ghost_Button ();
 	};
 
+void() HauntHead_Think =
+{  
+   if (self.owner.health < 1 ||
+	!(self.owner.runetype == RN_HEAD && self.owner.runevar == 1))
+	{
+	remove(self);
+	return;
+	}
+ 
+   makevectors(self.owner.angles);
+
+  // setorigin(self, self.owner.origin + v_up*20 - v_right*1 -
+//  v_forward*9);
+   setorigin (self, self.owner.origin);
+   self.nextthink = time;
+
+	self.angles_y = self.owner.v_angle_y - 27;
+	self.angles_x =  0 - self.owner.v_angle_x - 60;
+//   self.angles_y = self.owner.angles_y - 27;
+};
+
+
+void() HauntHead_Spawn =
+{
+   local entity temp;
+   
+   temp = spawn();
+   temp.movetype = MOVETYPE_FLY; 
+   temp.solid = SOLID_NOT;
+   temp.owner = self;
+   setorigin(temp, self.origin);
+   setsize(temp, '0 0 0', '0 0 0');
+   setmodel(temp, "progs/h_player.mdl");
+   temp.think = HauntHead_Think;
+   temp.nextthink = time;
+   temp.angles_x = -60;
+   temp.angles_z = -30;
+   temp.colormap = self.colormap;
+   self.runent = temp;
+};
+
+void () Rune_Head_Button =
+	{
+	if (self.runevar == 0)
+		{
+
+		self.runetime = self.modelindex;
+		setmodel (self, "");
+		self.modelindex = modelindex_none;
+		setsize (self, '-10 -10 -10', '10 10 10');
+		self.runevar = 1;
+		self.miscflag = self.weapon;
+		self.weapon = 0;
+		self.movetype = MOVETYPE_FLY;
+		self.weaponmodel = "";
+		HauntHead_Spawn ();
+		centerprint (self, "You became a Haunted Head!\n");
+		}
+	else
+		{
+		setmodel (self, "progs/player.mdl");
+		self.modelindex = self.runetime;
+		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+		self.runevar = 0;
+		self.weapon = self.miscflag;
+		self.miscflag = 0;
+		self.movetype = MOVETYPE_WALK;
+
+		centerprint (self, "You are normal again.\n");
+		W_SetCurrentAmmo ();
+		}
+	};
+
+
+void () Rune_Head_Float =
+	{
+	if (self.runevar == 1)
+		{
+		Rune_Fly ();
+		}
+	};
+
+void (vector bite_dir) Rune_Head_Bite =
+	{
+	local vector des;
+
+	des = self.origin + bite_dir * 30;
+	traceline (self.origin, des, FALSE, self);
+
+	if (trace_ent.solid != SOLID_BSP)
+		{
+		//chomp sound
+		//centerprint (self, "CHOMP!!\n");
+		sound (self, CHAN_WEAPON, "shambler/smack.wav", 1,ATTN_NORM);
+		T_Damage (trace_ent, self, self, 50);
+		}
+	else
+		//centerprint (self, "bite!\n");
+		//gnashing sound
+		sound(self, CHAN_WEAPON, "knight/idle.wav", 1, ATTN_NORM);
+
+	};

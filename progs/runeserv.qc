@@ -52,7 +52,8 @@ void() Rune_Think =
    if (self.runetype == RN_WEIRD) Rune_Weird(); else
    if (self.runetype == RN_BERSERK) Berserk_Bleed(); else
    if (self.runetype == RN_PHASE) Wall_Check(); else
-   if (self.runetype == RN_GHOST) Rune_Ghost_Hold ();
+   if (self.runetype == RN_GHOST) Rune_Ghost_Hold (); else
+   if (self.runetype == RN_HEAD) Rune_Head_Float ();
    return;
 };
 
@@ -76,6 +77,7 @@ void() Rune_Button =
    else if (self.runetype == RN_WEIRD) Weird_Throw();
    else if (self.runetype == RN_IMPACT)  Rune_Impact ();
    else if (self.runetype == RN_GHOST)  Rune_Ghost_Button ();
+   else if (self.runetype == RN_HEAD)  Rune_Head_Button ();
 };
 
 void() Rune_Tell =
@@ -158,6 +160,8 @@ void() Rune_Tell =
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Phased Rune \nŸ\n");
    else if (self.runetype == RN_GHOST)
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Egon Rune \nŸ\n");
+   else if (self.runetype == RN_HEAD)
+      centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Haunted Head \nŸ\n");
 };
 
 void() Rune_Activate =
@@ -169,6 +173,10 @@ void() Rune_Activate =
    self.runevector = '0 0 0';
    self.movetype = MOVETYPE_WALK;
    self.touch = SUB_Null;
+
+   // Clear out any possible bad clipping state from Haunted Head.
+   setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+   self.modelindex = modelindex_player;
 
    if (self.runetype == RN_HEALTH)
    {
@@ -193,6 +201,8 @@ void() Rune_Activate =
    else if (self.runetype == RN_CLOAK) Rune_Cloak();
    else if (self.runetype == RN_IMPACT) self.touch = Impact_Touch;
    else if (self.runetype == RN_GHOST) self.runevar = 0;
+   else if (self.runetype == RN_HEAD) self.runevar = 0;
+
    Rune_Tell();
 };
 

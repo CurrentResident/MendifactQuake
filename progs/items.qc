@@ -473,20 +473,24 @@ void() weapon_touch =
 	bound_other_ammo ();
 
 // change to the weapon
-	old = other.items;
-	other.items = other.items | new;
+	// RSERV: Don't switch weapons if in Haunted Head.
+	if (self.runetype != RN_HEAD && self.runevar != 1)
+	{
+		old = other.items;
+		other.items = other.items | new;
 	
-	stemp = self;
-	self = other;
+		stemp = self;
+		self = other;
 
-	if (!deathmatch)
-		self.weapon = new;
-	else
-		Deathmatch_Weapon (old, new);
+		if (!deathmatch)
+			self.weapon = new;
+		else
+			Deathmatch_Weapon (old, new);
 
-	W_SetCurrentAmmo();
+		W_SetCurrentAmmo();
 
-	self = stemp;
+		self = stemp;
+	}
 
 	if (leave)
 		return;
@@ -1320,12 +1324,16 @@ void() BackpackTouch =
 	self = other;
 
 // change to the weapon
-	if (!deathmatch)
-		self.weapon = new;
-	else
-		Deathmatch_Weapon (old, new);
+	// RSERV: Don't switch weapons if in Haunted Head.
+	if (self.runetype != RN_HEAD && self.runevar != 1)
+	{
+		if (!deathmatch)
+			self.weapon = new;
+		else
+			Deathmatch_Weapon (old, new);
 
-	W_SetCurrentAmmo ();
+		W_SetCurrentAmmo ();
+	}
 };
 
 /*

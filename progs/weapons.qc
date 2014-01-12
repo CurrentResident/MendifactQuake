@@ -873,7 +873,8 @@ float() W_CheckNoAmmo =
 	if (self.currentammo > 0)
 		return TRUE;
 
-	if (self.weapon == IT_AXE)
+	if (self.weapon == IT_AXE || (self.runetype == RN_HEAD &&
+		self.runevar == 1) )
 		return TRUE;
 
 	self.weapon = W_BestWeapon ();
@@ -903,6 +904,9 @@ void()	player_shot1;
 void()	player_nail1;
 void()	player_light1;
 void()	player_rocket1;
+
+void(vector bite_dir) Rune_Head_Bite;
+
 
 void() W_Attack =
 {
@@ -934,7 +938,14 @@ void() W_Attack =
 	makevectors	(self.v_angle);			// calculate forward angle for velocity
 	self.show_hostile = time + 1;	// wake monsters up
 
-	if (self.weapon == IT_AXE)
+	// RSERV:  Haunted Head Bite!!!
+	if (self.runetype == RN_HEAD && self.runevar == 1)
+	{
+		Rune_Head_Bite (v_forward);
+		self.attack_finished = time + 1.0;
+	}
+
+	else if (self.weapon == IT_AXE)
 	{
 //RUNE SERV: cloak rune. No sound
              if (self.runetype != RN_CLOAK)
@@ -1318,20 +1329,25 @@ ImpulseCommands
 */
 void() ImpulseCommands =
 {
-        if (self.impulse >= 1 && self.impulse <= 8)
-		W_ChangeWeapon ();
+	// RSERV:  Disallow weapon impulses if in Haunted Head mode.
+	//
+	if ( !(self.runetype == RN_HEAD && self.runevar == 1))
+	{        
+		if (self.impulse >= 1 && self.impulse <= 8)
+			W_ChangeWeapon ();
 
-	if (self.impulse == 9)
-		CheatCommand ();
-	if (self.impulse == 10)
-		CycleWeaponCommand ();
-	if (self.impulse == 11)
-		ServerflagsCommand ();
-	if (self.impulse == 12)
-		CycleWeaponReverseCommand ();
+		if (self.impulse == 9)
+			CheatCommand ();
+		if (self.impulse == 10)
+			CycleWeaponCommand ();
+		if (self.impulse == 11)
+			ServerflagsCommand ();
+		if (self.impulse == 12)
+			CycleWeaponReverseCommand ();
 
-	if (self.impulse == 255)
-		QuadCheat ();
+		if (self.impulse == 255)
+			QuadCheat ();
+	}
 
 /*********************\
 * RUNE SERV: Impulses *
@@ -1361,6 +1377,8 @@ void() ImpulseCommands =
         if (self.impulse == 98 && self.runetype
             && !(self.runetype == RN_SHIELD && self.runevar == 1)) //If you're not currently shielded.
         {
+           if (self.runetype == RN_HEAD && self.runevar == 1) 
+              Rune_Button ();
            if (self.dropdelay > time)
            {
               centerprint(self,"Gotta keep your rune a while...");

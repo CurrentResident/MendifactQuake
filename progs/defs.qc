@@ -258,7 +258,7 @@ float modelindex_none;
 float runeparm;
 
 //Constant for how many runes exist
-float TOTAL_RUNETYPE = 36;
+float TOTAL_RUNETYPE = 37;
 
 //Rune constants (NONE MAY BE OVER 100!)
 float RN_HEALTH = 1;
@@ -299,9 +299,10 @@ float RN_PHOENIX = 35;
 
 //Only in LAN version.
 
-float RN_CLOUD = 37;
-float RN_FIREWALK = 38;
+float RN_CLOUD = 38;
+float RN_FIREWALK = 39;
 float RN_GHOST = 36;
+float RN_HEAD = 37;
 
 // message protocol defines
 float SVC_SETVIEWPORT	= 5;

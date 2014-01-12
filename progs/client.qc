@@ -832,8 +832,8 @@ void() PlayerJump =
 		return;
 	}
 
-//RUNE SERV: Rune of Flight does different jumpy things
-     if (self.runetype == RN_FLY)
+//RUNE SERV: Rune of Flight and Haunted Head do different jumpy things
+     if (self.runetype == RN_FLY || (self.runetype == RN_HEAD && self.runevar == 1))
      {
         self.velocity_z = self.velocity_z + 270;
         return;
@@ -1535,6 +1535,15 @@ void(entity targ, entity attacker) ClientObituary =
                                  attacker.frags = attacker.frags + 1;
                                  return;
                               }
+			if (attacker.runetype == RN_HEAD && attacker.runevar == 1)
+			{
+				bprint (targ.netname);
+				bprint (" was eaten alive by ");
+				bprint (attacker.netname);
+				bprint ("\n");
+				attacker.frags = attacker.frags + 1;
+				return;
+			}
                            }
                         }
 //RUNE SERV end----------
