@@ -211,8 +211,17 @@ string() RandMap =
    local float rand;
    local string newmap;
 
-   rand = ceil(random()*36);
-
+   rand = ceil(random()*36.0);
+//   rand = rand + ceil (random () * 21.0);
+ //  rand = rand + ceil (random () * 53.0);
+ //  rand = rand + ceil (random () * 18.0);
+   rand = rand + time;
+   rand = ceil (((rand / 35.0) - floor (rand / 35.0)) * 35.0) + 1;
+/*   while (rand > 36)
+	{
+	rand = rand - 36;
+	}
+*/
    if (rand == 1) newmap = "start";
    if (rand == 2) newmap = "dm1";
    if (rand == 3) newmap = "dm2";
