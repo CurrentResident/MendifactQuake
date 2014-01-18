@@ -474,7 +474,7 @@ void() weapon_touch =
 
 // change to the weapon
 	// RSERV: Don't switch weapons if in Haunted Head.
-	if (self.runetype != RN_HEAD && self.runevar != 1)
+	if (! (self.runetype == RN_HEAD && self.runevar == 1))
 	{
 		old = other.items;
 		other.items = other.items | new;
@@ -1325,7 +1325,7 @@ void() BackpackTouch =
 
 // change to the weapon
 	// RSERV: Don't switch weapons if in Haunted Head.
-	if (self.runetype != RN_HEAD && self.runevar != 1)
+	if (! (self.runetype == RN_HEAD && self.runevar == 1))
 	{
 		if (!deathmatch)
 			self.weapon = new;
