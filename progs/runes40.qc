@@ -667,7 +667,7 @@ void () Rune_Ghost_Button =
 			self.runent = grabee;
 			self.runevector = grabee.origin;
 			self.runetime = time;
-			self.runevar = vlen (trace_endpos - org);
+			self.runevar = vlen (trace_endpos - org) + 18.0;
 			grabee.effects = grabee.effects | EF_BRIGHTFIELD;
 			grabee.miscent = self;
 
@@ -731,7 +731,7 @@ void () Rune_Ghost_Hold =
 		self.runetime <= time )
 		{
 		local vector org;
-		local vector place, dir;
+		local vector place;
 		local float temp1, scalelen;
 
 		self.runent.flags = self.runent.flags -
@@ -740,10 +740,8 @@ void () Rune_Ghost_Hold =
 		org = self.origin + '0 0 16';
 		makevectors (self.v_angle);
 		place = org + v_forward * self.runevar;
-		dir = normalize (place - self.runevector);
 	
-		self.runent.velocity = dir * 4.0 *
-			vlen(place-self.runevector);
+		self.runent.velocity = (place - self.runevector) * 5.0;
 		self.runevector = self.runent.origin;
 
 		self.runent.attack_finished = time + 1;
