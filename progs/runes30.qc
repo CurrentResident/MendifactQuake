@@ -359,7 +359,7 @@ void() Freeze_Touch =
    self.think = Freeze_Frozen;
 
 //people with firewalking would obviously get out faster
-   if (other.runetype == RN_FIREWALK) self.runetime = time + 5;
+//   if (other.runetype == RN_FIREWALK) self.runetime = time + 5;
 };
 
 void() Freeze_Arm =
@@ -500,7 +500,7 @@ void() Impact_Touch =
 {
    if (other == world) return;
    if (other.takedamage != DAMAGE_AIM) return;
-   if (self.runetime > time) return;
+ //  if (self.runetime > time) return;
 
    self.runetime = time + 0.5;
 
@@ -511,9 +511,24 @@ void() Impact_Touch =
    self.velocity = '0 0 0' - self.velocity;
    sound (self, CHAN_AUTO, "zombie/z_miss.wav", 1, ATTN_NORM);
    self.runevar = 10;
-   T_Damage(other, self, self, (40+random()*10));
+   T_Damage(other, self, self, (5+random()*10));
    self.runevar = 0;
 };
+
+void () Rune_Impact =
+	{
+
+	if (self.runetime < time && self.flags & FL_ONGROUND)
+		{
+		self.runetime = time + 1.0;
+		self.flags = self.flags - FL_ONGROUND;
+		makevectors (self.v_angle);
+		self.velocity = self.velocity + 1200.0 * v_forward;
+		sound (self, CHAN_AUTO, "doors/airdoor2.wav", 1,
+			ATTN_NORM);
+		self.touch = Impact_Touch;
+		}
+	};
 
 //void() Rune_Impact =
 //{

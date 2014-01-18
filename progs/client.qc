@@ -64,8 +64,8 @@ void() SetChangeParms =
 	parm9 = self.armortype * 100;
 
 //RUNE SERV: Players keep runes across levels;
-//        runeparm = self.runetype;
-        runeparm = 0;
+        runeparm = self.runetype;
+//        runeparm = 0;
 
 };
 
@@ -198,12 +198,12 @@ void() ExitIntermission =
 			if (!cvar("registered"))
 			{
 				WriteByte (MSG_ALL, SVC_FINALE);
-				WriteString (MSG_ALL, "As the corpse of the monstrous entity\nChthon sinks back into the lava whence\nit rose, you grip the Rune of Earth\nMagic tightly. Now that you have\nconquered the Dimension of the Doomed,\nrealm of Earth Magic, you are ready to\ncomplete your task in the other three\nhaunted lands of Quake. Or are you? If\nyou don't register Quake, you'll never\nknow what awaits you in the Realm of\nBlack Magic, the Netherworld, and the\nElder World!");
+				WriteString (MSG_ALL, "As the corpse of the monstrous entity\nChthon sinks back into the lava whence\nit rose, you grip the Rune of Earth\nMagic tightly. Now that you have\nconquered the Dimension of the Doomed,\nrealm of Earth Magic, you are ready to \ncomplete your task in the other three\nhaunted lands of Quake. Or are you? If\nyou don't register Quake, you'll never\nknow what awaits you in the Realm of\nBlack Magic, the Netherworld, and the\nElder World!");
 			}
 			else
 			{
 				WriteByte (MSG_ALL, SVC_FINALE);
-				WriteString (MSG_ALL, "As the corpse of the monstrous entity\nChthon sinks back into the lava whence\nit rose, you grip the Rune of Earth\nMagic tightly. Now that you have\nconquered the Dimension of the Doomed,\nrealm of Earth Magic, you are ready to\ncomplete your task. A Rune of magic\npower lies at the end of each haunted\nland of Quake. Go forth, seek the\ntotality of the four Runes!");
+				WriteString (MSG_ALL, "As the corpse of the monstrous entity\nChthon sinks back into the lava whence\nit rose, you grip the Rune of Earth\nMagic tightly. Now that you have\nconquered the Dimension of the Doomed,\nrealm of Earth Magic, you are ready to \ncomplete your task. A Rune of magic\npower lies at the end of each haunted\nland of Quake. Go forth, seek the\ntotality of the four Runes!");
 			}
 			return;
 		}
@@ -426,15 +426,38 @@ ClientKill
 Player entered the suicide command
 ============
 */
+
+void (entity tog) Rune_Ghost_Toggle;
+
 void() ClientKill =
 {
-
 	bprint (self.netname);
-	bprint (" suicides\n");
-	set_suicide_frame ();
-	self.modelindex = modelindex_player;
-	self.frags = self.frags - 2;	// extra penalty
-	respawn ();
+//****************  Egon Rune **************
+
+	if (self.miscent.runetype == RN_GHOST && self.miscent.runevar > 0
+		&& self.miscent.runent == self)
+		Rune_Ghost_Toggle (self.miscent);
+	
+	if (self.suicidecount == 3)
+		{
+		bprint (" is kicked for being a suicidal bitch\n");
+		stuffcmd (self, "say i suck.\n");
+		stuffcmd (self, "disconnect\n");
+		}
+	else
+		{
+		if (self.suicidecount == 0)
+			bprint (" suicides\n");
+		else if (self.suicidecount == 1)
+			bprint (" suicides again\n");
+		else if (self.suicidecount == 2)
+			bprint (" is asking for it\n");
+		set_suicide_frame ();
+		self.modelindex = modelindex_player;
+		self.frags = self.frags - 2;	// extra penalty
+		self.suicidecount = self.suicidecount + 1;
+		respawn ();
+		}
 };
 
 float(vector v) CheckSpawnPoint =
@@ -549,6 +572,12 @@ void() PutClientInServer =
         self.runetime = time;
         self.runevar = 0;
         self.runevector = '0 0 0';
+
+// suicide control
+
+//	self.suicidecount = 0.0;
+	self.miscflag = 0;
+	self.miscent = world;
 
 	DecodeLevelParms ();
 	
@@ -790,6 +819,10 @@ void() PlayerJump =
 	
 	if (self.flags & FL_WATERJUMP)
 		return;
+
+	if (self.miscent.runetype == RN_GHOST && self.miscent.runevar > 0
+		&& self.miscent.runent == self)
+		return;
 	
 	if (self.waterlevel >= 2)
 	{
@@ -818,7 +851,7 @@ void() PlayerJump =
 	}
 
 //RUNE SERV: Rune of Flight does different jumpy things
-     if (self.runetype == RN_FLY)
+     if (self.runetype == RN_FLY || (self.runetype == RN_HEAD && self.runevar == 1))
      {
         self.velocity_z = self.velocity_z + 270;
         return;
@@ -1337,7 +1370,9 @@ void() ClientConnect =
 {
 	bprint (self.netname);
 	bprint (" entered the game\n");
-	
+
+self.suicidecount = 0;
+
 //RUNE SERV: motd thingy
         self.motd_time = time + 2;
 	self.motd_count = 0;
@@ -1520,6 +1555,15 @@ void(entity targ, entity attacker) ClientObituary =
                                  attacker.frags = attacker.frags + 1;
                                  return;
                               }
+			     if (attacker.runetype == RN_HEAD && attacker.runevar == 1)
+				{
+				bprint (targ.netname);
+				bprint (" was eaten alive by ");
+				bprint (attacker.netname);
+				bprint ("\n");
+				attacker.frags = attacker.frags + 1;
+				return;
+				}	
                            }
                         }
 //RUNE SERV end----------
@@ -1782,9 +1826,22 @@ void(entity targ, entity attacker) ClientObituary =
 
 			// in-water deaths
 			rnum = targ.watertype;
+
+
+// ****  Egon rune stuff  *****
+
+
 			if (rnum == -3)
 			{
-				if (random() < 0.5)
+				if (targ.miscent.runetype == RN_GHOST)
+					{
+					bprint (" had his head held under by ");
+					bprint (targ.miscent.netname);
+					bprint ("\n");
+					targ.miscent.frags =targ.miscent.frags+1;
+					targ.frags = targ.frags + 1;
+					}
+				else if (random() < 0.5)
 					bprint (" sleeps with the fishes\n");
 				else
 					bprint (" sucks it down\n");
@@ -1792,7 +1849,15 @@ void(entity targ, entity attacker) ClientObituary =
 			}
 			else if (rnum == -4)
 			{
-				if (random() < 0.5)
+				if (targ.miscent.runetype == RN_GHOST)
+					{
+					bprint(" was fed acid soup by ");
+					bprint (targ.miscent.netname);
+					bprint ("\n");
+					targ.miscent.frags =targ.miscent.frags+1;
+					targ.frags = targ.frags + 1;
+					}
+				else if (random() < 0.5)
 					bprint (" gulped a load of slime\n");
 				else
 					bprint (" can't exist on slime alone\n");
@@ -1800,12 +1865,20 @@ void(entity targ, entity attacker) ClientObituary =
 			}
 			else if (rnum == -5)
 			{
-				if (targ.health < -15)
+				if (targ.miscent.runetype == RN_GHOST)
+					{
+					bprint(" was dunked in the hottub by ");
+					bprint (targ.miscent.netname);
+					bprint ("\n");
+					targ.miscent.frags =targ.miscent.frags+1;
+					targ.frags = targ.frags + 1;
+					}
+				else if (targ.health < -15)
 				{
 					bprint (" burst into flames\n");
 					return;
 				}
-				if (random() < 0.5)
+				else if (random() < 0.5)
 					bprint (" turned into hot slag\n");
 				else
 					bprint (" visits the Volcano God\n");
@@ -1815,8 +1888,19 @@ void(entity targ, entity attacker) ClientObituary =
 			// fell to their death?
 			if (targ.deathtype == "falling")
 			{
-				targ.deathtype = "";
-				bprint (" fell to his death\n");
+				if (targ.miscent.runetype == RN_GHOST)
+					{
+					bprint(" got banged really hard by ");
+					bprint (targ.miscent.netname);
+					bprint ("\n");
+					targ.miscent.frags =targ.miscent.frags+1;
+					targ.frags = targ.frags + 1;
+					}
+				else
+					{
+					targ.deathtype = "";
+					bprint (" fell to his death\n");
+					}
 				return;
 			}
 

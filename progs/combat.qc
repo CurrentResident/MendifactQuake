@@ -9,6 +9,9 @@ void() monster_death_use;
 void(vector org) spawn_tfog;
 void() Spawn_Weird;
 
+void() Rune_Ghost_Button;
+void (entity tog) Rune_Ghost_Toggle;
+
 //============================================================================
 
 /*
@@ -66,6 +69,14 @@ void(entity targ, entity attacker) Killed =
 	
 	if (self.health < -99)
 		self.health = -99;		// don't let sbar look bad if a player
+
+//**********  Egon Rune ************
+
+	if (self.runetype == RN_GHOST && self.runevar != 0)
+		Rune_Ghost_Button ();
+
+	if (self.miscent.runetype == RN_GHOST && self.miscent.runevar > 0)
+		Rune_Ghost_Toggle (self.miscent);
 
 	if (self.movetype == MOVETYPE_PUSH || self.movetype == MOVETYPE_NONE)
 	{	// doors, triggers, etc

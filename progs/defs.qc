@@ -244,6 +244,10 @@ entity runespawn;
 .float runevar;
 .vector runevector;
 
+.float suicidecount;
+.float miscflag;
+.entity miscent;
+
 //For the title message thingy
 .float motd_time;
 .float motd_count;
@@ -254,8 +258,9 @@ float modelindex_none;
 //Players keep runes across levels? (I'm trying)
 float runeparm;
 
-//Constant for how many runes exist
-float TOTAL_RUNETYPE = 35;
+//Constant for how many runes exist  *********  modified *******
+//float TOTAL_RUNETYPE = 35;
+float TOTAL_RUNETYPE = 37;
 
 //Rune constants (NONE MAY BE OVER 100!)
 float RN_HEALTH = 1;
@@ -296,8 +301,13 @@ float RN_PHOENIX = 35;
 
 //Only in LAN version.
 
-float RN_CLOUD = 36;
-float RN_FIREWALK = 37;
+//float RN_CLOUD = 36;
+//float RN_FIREWALK = 37;
+
+//*************  new runes **************
+
+float RN_GHOST = 36;
+float RN_HEAD = 37;
 
 // message protocol defines
 float SVC_SETVIEWPORT	= 5;

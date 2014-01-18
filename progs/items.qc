@@ -221,7 +221,7 @@ void() item_megahealth_rot =
 // just blindly subtract the flag off
 	other.items = other.items - (other.items & IT_SUPERHEALTH);
 	
-	if (deathmatch == 1)	// deathmatch 2 is silly old rules
+	if (deathmatch == 1  ||deathmatch ==3)	// deathmatch 2 is silly old rules
 	{
 		self.nextthink = time + 20;
 		self.think = SUB_regen;
@@ -274,7 +274,7 @@ void() armor_touch =
 
 	self.solid = SOLID_NOT;
 	self.model = string_null;
-	if (deathmatch == 1)
+	if (deathmatch == 1 || deathmatch == 3)
 		self.nextthink = time + 20;
 	self.think = SUB_regen;
 
@@ -407,7 +407,7 @@ void() weapon_touch =
 	best = W_BestWeapon();
 	self = stemp;
 
-	if (deathmatch == 2 || coop)
+	if (deathmatch == 2 || deathmatch == 3 || coop)
 		leave = 1;
 	else
 		leave = 0;
@@ -676,7 +676,7 @@ local float		best;
 // remove it in single player, or setup for respawning in deathmatch
 	self.model = string_null;
 	self.solid = SOLID_NOT;
-	if (deathmatch == 1)
+	if (deathmatch == 1 || deathmatch == 3)
 		self.nextthink = time + 30;
 	self.think = SUB_regen;
 
@@ -1256,7 +1256,8 @@ void() BackpackTouch =
 // if the player was using his best weapon, change up to the new one if better		
 	stemp = self;
 	self = other;
-	best = W_BestWeapon();
+	if (!(other.runetype == RN_HEAD && other.runevar == 1))
+		best = W_BestWeapon();
 	self = stemp;
 
 // change weapons
@@ -1320,12 +1321,17 @@ void() BackpackTouch =
 	self = other;
 
 // change to the weapon
+
+// *******  rune code *******
+   if (self.runetype != RN_HEAD && self.runevar != 1)
+	{
 	if (!deathmatch)
 		self.weapon = new;
 	else
 		Deathmatch_Weapon (old, new);
 
 	W_SetCurrentAmmo ();
+	}
 };
 
 /*

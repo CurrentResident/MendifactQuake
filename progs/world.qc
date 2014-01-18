@@ -324,6 +324,10 @@ void() worldspawn =
         precache_sound ("zombie/z_miss.wav"); //Chaff hits someone.
         precache_sound ("boss2/idle.wav"); //Blowing up in a Death Spot
 
+	//****** new
+
+	precache_sound ("knight/idle.wav");
+
 //For the Shambler Helper
 	precache_model ("progs/shambler.mdl");
 	precache_model ("progs/s_light.mdl");

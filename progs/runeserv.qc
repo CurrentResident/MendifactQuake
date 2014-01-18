@@ -39,7 +39,7 @@ void() REAL_Comments =
 void() Rune_Think =
 {
    if (self.runetype == RN_REGEN) Rune_Regen(); else
-   if (self.runetype == RN_FIREWALK) Rune_Firewalk(); else //new
+//   if (self.runetype == RN_FIREWALK) Rune_Firewalk(); else //new
    if (self.runetype == RN_ZAP) Rune_Zap(); else
    if (self.runetype == RN_BOMB) Rune_Bomb(); else
    if (self.runetype == RN_CLOAK) Rune_Cloak(); else
@@ -52,6 +52,8 @@ void() Rune_Think =
    if (self.runetype == RN_WEIRD) Rune_Weird(); else
    if (self.runetype == RN_BERSERK) Berserk_Bleed(); else
    if (self.runetype == RN_PHASE) Wall_Check(); else
+	if (self.runetype == RN_GHOST) Rune_Ghost_Hold (); else
+	if (self.runetype == RN_HEAD) Rune_Head_Float ();
    return;
 };
 
@@ -73,6 +75,12 @@ void() Rune_Button =
    else if (self.runetype == RN_SHAMB) Rune_ShamblerReloc();
    else if (self.runetype == RN_DUAL) Rune_Dual();
    else if (self.runetype == RN_WEIRD) Weird_Throw();
+
+//******** new rune code *********
+
+	else if (self.runetype == RN_IMPACT)  Rune_Impact ();
+	else if (self.runetype == RN_GHOST)  Rune_Ghost_Button ();
+	else if (self.runetype == RN_HEAD)  Rune_Head_Button ();
 };
 
 void() Rune_Tell =
@@ -91,8 +99,9 @@ void() Rune_Tell =
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Rune of Environmental Protection \nŸ");
    else if (self.runetype == RN_FLY)
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Rune of Flight \nŸ");
-   else if (self.runetype == RN_FIREWALK)
-      centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Rune of Fire Walking \nŸ");
+//   else if (self.runetype == RN_FIREWALK)
+//      centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n
+//Rune of Fire Walking \nŸ");
    else if (self.runetype == RN_RECALL)
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Rune of Recall \nŸ");
    else if (self.runetype == RN_ZAP)
@@ -139,8 +148,9 @@ void() Rune_Tell =
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Shub Hat \nŸ\n");
    else if (self.runetype == RN_REPEL)
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Rune of Repulsion \nŸ\n");
-   else if (self.runetype == RN_CLOUD)
-      centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Rune of Floating Spiky Death Cloud \nŸ\n");
+//   else if (self.runetype == RN_CLOUD)
+//      centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n
+//Rune of Floating Spiky Death Cloud \nŸ\n");
    else if (self.runetype == RN_SHAMB)
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Shambler Helper \nŸ\n");
    else if (self.runetype == RN_DUAL)
@@ -153,7 +163,12 @@ void() Rune_Tell =
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Berserker Rune \nŸ\n");
    else if (self.runetype == RN_PHASE)
       centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Phased Rune \nŸ\n");
+	else if (self.runetype == RN_GHOST)
+      centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Egon Rune \nŸ\n");
+	else if (self.runetype == RN_HEAD)
+      centerprint(self,"\n\n\n\n\n\n\n\n\n\nŸ\n Haunted Head \nŸ\n");
 };
+
 
 void() Rune_Activate =
 {
@@ -164,6 +179,9 @@ void() Rune_Activate =
    self.runevector = '0 0 0';
    self.movetype = MOVETYPE_WALK;
    self.touch = SUB_Null;
+
+	setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+	self.modelindex = modelindex_player;
 
    if (self.runetype == RN_HEALTH)
    {
@@ -179,7 +197,7 @@ void() Rune_Activate =
    else if (self.runetype == RN_SHIELD) self.runevar = 0;
    else if (self.runetype == RN_VENG) VengHead_Spawn();
    else if (self.runetype == RN_SHUB) ShubHat_Spawn();
-   else if (self.runetype == RN_CLOUD) Cloud_Spawn();
+//   else if (self.runetype == RN_CLOUD) Cloud_Spawn();
    else if (self.runetype == RN_FLY) self.movetype = MOVETYPE_FLY;
    else if (self.runetype == RN_SHAMB) Rune_ShamblerSpawn();
 //   else if (self.runetype == RN_FIREWALK) GFire_Spawn();
@@ -187,6 +205,10 @@ void() Rune_Activate =
    else if (self.runetype == RN_PHOENIX) self.runevar = 3;
    else if (self.runetype == RN_CLOAK) Rune_Cloak();
    else if (self.runetype == RN_IMPACT) self.touch = Impact_Touch;
+	//******** new stuff **********
+	else if (self.runetype == RN_GHOST) self.runevar = 0;
+	else if (self.runetype == RN_HEAD) self.runevar = 0;
+
    Rune_Tell();
 };
 
@@ -195,8 +217,14 @@ string() RandMap =
    local float rand;
    local string newmap;
 
-   rand = ceil(random()*36);
-
+   rand = ceil(random()*36.0);
+   rand = rand + ceil (random () * 21.0);
+   rand = rand + ceil (random () * 53.0);
+   rand = rand + ceil (random () * 18.0);
+   while (rand > 36)
+	{
+	rand = rand - 36;
+	}
    if (rand == 1) newmap = "start";
    if (rand == 2) newmap = "dm1";
    if (rand == 3) newmap = "dm2";
@@ -251,7 +279,14 @@ void() MOTD =
       self.motd_count = self.motd_count + 1;
 
       if (deathmatch)
-            centerprint(self,"Aòôéæáãô Qõáëå 2.1\n€ƒƒƒƒƒƒƒƒ‚\nCollect a rune, get an ability!\n\nIMPULSE “’’ MUST BE BOUND.\nIMPULSE ›› shows your current rune.\nIMPULSE ›š deactivates your rune.\nƒƒ\nWritten by ÓéÎÇÅ\nE-mail: singe@ix.netcom.com\n€ƒƒƒƒƒƒƒƒ‚");
+
+	centerprint (self, "Artifact Quake  -\nby Singe <singe@ix.netcom.com> \n\nthis server is run and modified by \nMendicant-  jjt@umr.edu"); 
+//            centerprint(self,"Aòôéæáãô Qõáëå
+//2.1\n€ƒƒƒƒƒƒƒƒ‚\nCollect a rune, get an
+//ability!\n\nIMPULSE “’’ MUST BE BOUND.\nIMPULSE ›› shows yourcurrent
+//rune.\nIMPULSE ›š deactivates your rune.\nƒƒ\nWrittenby
+//ÓéÎÇÅ\n
+//E -mail: singe@ix.netcom.com\n€ƒƒƒƒƒƒƒƒ‚");
    }
 };
 

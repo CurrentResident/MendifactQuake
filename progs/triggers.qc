@@ -317,7 +317,10 @@ void(vector org) spawn_tfog =
 
 void() tdeath_touch =
 {
-	if (other == self.owner)
+
+//************************************  wormhoel rune
+
+	if (other == self.owner || other.classname == "wormhole")
 		return;
 
 // frag anyone who teleports in on top of an invincible player

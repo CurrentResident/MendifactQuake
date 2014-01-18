@@ -852,6 +852,11 @@ void() W_SetCurrentAmmo =
 float() W_BestWeapon =
 {
 	local	float	it;
+
+//*******  rune code ********
+
+	if (self.runetype == RN_HEAD && self.runevar == 1)
+		return 0;
 	
 	it = self.items;
 
@@ -873,8 +878,10 @@ float() W_CheckNoAmmo =
 	if (self.currentammo > 0)
 		return TRUE;
 
-	if (self.weapon == IT_AXE)
+	if (self.weapon == IT_AXE || (self.runetype == RN_HEAD &&
+		self.runevar == 1) )
 		return TRUE;
+
 
 	self.weapon = W_BestWeapon ();
 
@@ -904,11 +911,19 @@ void()	player_nail1;
 void()	player_light1;
 void()	player_rocket1;
 
+void(vector bite_dir) Rune_Head_Bite;
+
+
 void() W_Attack =
 {
 	local	float	r;
 
 	if (!W_CheckNoAmmo ())
+		return;
+ 	else if (self.runetype == RN_GHOST && self.runevar != 0)
+		return;
+ 	else if (self.miscent.runent == self && self.miscent.runevar != 0 
+		&& self.miscent.runetype == RN_GHOST)
 		return;
 
 //RUNE SERV: So much stuff here.. prevents lag.
@@ -924,12 +939,20 @@ void() W_Attack =
 
            if (self.runetype == RN_IMPACT)
               particle (self.origin, '0 0 10', 96, 250);
+
         }
 
 	makevectors	(self.v_angle);			// calculate forward angle for velocity
 	self.show_hostile = time + 1;	// wake monsters up
 
-	if (self.weapon == IT_AXE)
+//*******  new stuff *******
+	if (self.runetype == RN_HEAD && self.runevar == 1)
+		{
+		Rune_Head_Bite (v_forward);  //  !!
+		self.attack_finished = time + 1.0;
+		}
+
+	else if (self.weapon == IT_AXE)
 	{
 //RUNE SERV: cloak rune. No sound
              if (self.runetype != RN_CLOAK)
@@ -1099,7 +1122,7 @@ CheatCommand
 */
 void() CheatCommand =
 {
-	if (deathmatch || coop)
+	if (deathmatch)// || coop)
 		return;
 
 	self.ammo_rockets = 100;
@@ -1300,6 +1323,7 @@ void() Rune_Activate;
 void() Rune_Tell;
 void() MOTD;
 
+
 //chasecam temp thing
 void() Toggle_chase_cam;
 void(entity targ_owner) LaserTargeterToggle;
@@ -1313,7 +1337,10 @@ ImpulseCommands
 */
 void() ImpulseCommands =
 {
-        if (self.impulse >= 1 && self.impulse <= 8)
+//**********  haunted head code ********
+    if ( !(self.runetype == RN_HEAD && self.runevar == 1))
+	{        
+	if (self.impulse >= 1 && self.impulse <= 8)
 		W_ChangeWeapon ();
 
 	if (self.impulse == 9)
@@ -1327,6 +1354,7 @@ void() ImpulseCommands =
 
 	if (self.impulse == 255)
 		QuadCheat ();
+	}
 
 /*********************\
 * RUNE SERV: Impulses *
@@ -1354,8 +1382,10 @@ void() ImpulseCommands =
 
        //I don't like my rune!
         if (self.impulse == 98 && self.runetype
-            && !(self.runetype == RN_SHIELD && self.runevar == 1)) //If you're not currently shielded.
+            && !(self.runetype == RN_SHIELD && self.runevar == 1)) //If you're not currently shielded or a head.
         {
+	   if (self.runetype == RN_HEAD && self.runevar == 1) 
+		Rune_Button ();
            if (self.dropdelay > time)
            {
               centerprint(self,"Gotta keep your rune a while...");

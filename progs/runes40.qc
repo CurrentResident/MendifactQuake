@@ -42,7 +42,11 @@ void() Ball_Touch2 =
 
 void() Ball_Move =
 {
-   if (self.owner.health < 1 || self.owner.runetype != RN_CLOUD) { remove(self); return; }
+   if (self.owner.health < 1)
+	{ 
+	remove(self); 
+	return; 
+	}
 
    self.nextthink = time + 3 + crandom()*0.3;
 
@@ -145,7 +149,7 @@ void() Cloud_Bye =
 
 void() Cloud_Think =
 {
-   if (self.owner.health < 1 || self.owner.runetype != RN_CLOUD)
+   if (self.owner.health < 1)// || self.owner.runetype != RN_CLOUD)
    {
       self.think = Cloud_Bye;
       self.nextthink = time + 2;
@@ -417,6 +421,29 @@ void() Weird_Think =
       self.attack_finished = time + 0.5;
       stuffcmd(self.runent, "v_cshift 256 256 256 200\n");
    }
+
+//*********  New weirdness things ***********
+
+	if (self.runevar == 11)
+		{
+		if (self.runent.classname == "player")
+			{
+			local float rant;
+			rant = random ();
+			if (rant < 0.2)
+				stuffcmd (self.runent, "say bitch\n");
+			else if (rant < 0.4)
+				stuffcmd (self.runent, "say slob\n");
+			else if (rant < 0.6)
+				stuffcmd (self.runent, "say you shit\n");
+			else if (rant < 0.8)
+				stuffcmd (self.runent, "say slut\n");
+			else
+				stuffcmd (self.runent, "say fuckin twit\n");
+
+			self.nextthink = time + random () * 3;
+			}
+		}
 };
 
 void() Weird_Touch =
@@ -436,7 +463,12 @@ void() Weird_Touch =
       self.touch = SUB_Null;
       self.think = Weird_Think;
       self.nextthink = time;
-      self.runevar = ceil(random()*10);
+
+//*********  new weirdness stuff. ********
+
+//      self.runevar = ceil(random()*10);
+      self.runevar = ceil(random()*11);
+
       setmodel(self,"");
 
       sound (self, CHAN_BODY, "boss2/idle.wav", 1, ATTN_NORM);
@@ -451,6 +483,10 @@ void() Weird_Touch =
       if (self.runevar == 8) centerprint(other, " Hit by weirdness! \nžžžžžžžžžžžžžžžžžžžžŸ\nHOW DO I SHOOT?!");
       if (self.runevar == 9) centerprint(other, " Hit by weirdness! \nžžžžžžžžžžžžžžžžžžžžŸ\nVERTIGO!");
       if (self.runevar == 10) centerprint(other, " Hit by weirdness! \nžžžžžžžžžžžžžžžžžžžžŸ\nI'M BLIND! I'M BLIND!");
+
+//	if (self.runevar == 11) centerprint (other, "cursing!\n");
+      if (self.runevar == 11) centerprint(other, " Hit by weirdness! \nžžžžžžžžžžžžžžžžžžžžŸ\nUNCONTROLLABLE SWEARING!");
+
    }
 };
 
@@ -605,3 +641,234 @@ void() Wall_Check =
 
    setorigin(self, neworg);
 };
+
+
+void () Rune_Ghost_Button =
+	{
+	local entity grabee;
+	local vector org;
+
+//	bprint ("Button Hit!\n");
+
+	if (self.runevar == 0)
+		{
+
+//		bprint ("Searching...\n");
+
+		self.runevar = 1;
+		makevectors (self.v_angle);
+		org = self.origin + '0 0 16';
+		traceline (org, org + v_forward * 1500.0, FALSE, self);
+		grabee = trace_ent;
+
+
+		if (grabee.solid != SOLID_BSP && grabee != world)
+			{
+			self.runent = grabee;
+			self.runevector = grabee.origin;
+			self.runetime = time;
+			self.runevar = vlen (trace_endpos - org);
+			grabee.effects = grabee.effects | EF_BRIGHTFIELD;
+			grabee.miscent = self;
+
+//			bprint ("Grabbing ");
+//			bprint (self.runent.classname);
+//			bprint ("\n");
+
+
+			}
+
+
+	        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+        	WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
+	        WriteEntity (MSG_BROADCAST, self);
+        	WriteCoord (MSG_BROADCAST, org_x);
+	        WriteCoord (MSG_BROADCAST, org_y);
+        	WriteCoord (MSG_BROADCAST, org_z);
+	        WriteCoord (MSG_BROADCAST, trace_endpos_x);
+        	WriteCoord (MSG_BROADCAST, trace_endpos_y);
+	        WriteCoord (MSG_BROADCAST, trace_endpos_z);
+		}
+	else
+		{
+
+//		bprint ("Releasing ");
+//		bprint (self.runent.classname);
+//		bprint ("\n");
+
+		if (self.runent != world)
+			{
+			self.runent.effects = self.runent.effects - EF_BRIGHTFIELD;
+			self.runent = world;
+			}
+		self.runevar = 0;
+		self.runetime = time;
+		self.runevector = '0 0 0';
+		self.cnt = 0;
+
+		}
+
+//	bprint ("Finished.\n");
+
+	};
+
+void (entity tog) Rune_Ghost_Toggle =
+	{
+	local entity temp;
+
+	temp = self;
+	self = tog;
+	Rune_Ghost_Button ();
+	self = temp;
+
+	return;
+	};
+
+
+void () Rune_Ghost_Hold =
+	{
+	if (self.runevar != 0 && self.runent != world &&
+		self.runetime <= time )
+		{
+		local vector org;
+		local vector place, dir;
+		local float temp1, scalelen;
+
+		self.runent.flags = self.runent.flags -
+			(self.runent.flags & FL_ONGROUND);
+
+		org = self.origin + '0 0 16';
+		makevectors (self.v_angle);
+		place = org + v_forward * self.runevar;
+		dir = normalize (place - self.runevector);
+	
+		self.runent.velocity = dir * 4.0 *
+			vlen(place-self.runevector);
+		self.runevector = self.runent.origin;
+
+		self.runent.attack_finished = time + 1;
+		self.runetime = time + 0.1;
+
+	        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+        	WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
+	        WriteEntity (MSG_BROADCAST, self);
+        	WriteCoord (MSG_BROADCAST, org_x);
+	        WriteCoord (MSG_BROADCAST, org_y);
+        	WriteCoord (MSG_BROADCAST, org_z);
+	        WriteCoord (MSG_BROADCAST, self.runevector_x);
+        	WriteCoord (MSG_BROADCAST, self.runevector_y);
+	        WriteCoord (MSG_BROADCAST, self.runevector_z);
+
+//		bprint ("Holding ");
+//		bprint (self.runent.classname);
+//		bprint ("\n");
+
+		}
+	else if (self.runevar != 0 && self.runent == world)
+		Rune_Ghost_Button ();
+	else if (self.runent.health <= 0 && self.runent != world)
+		Rune_Ghost_Button ();
+	};
+
+void() HauntHead_Think =
+{  
+   if (self.owner.health < 1 ||
+	!(self.owner.runetype == RN_HEAD && self.owner.runevar == 1))
+	{
+	remove(self);
+	return;
+	}
+ 
+   makevectors(self.owner.angles);
+
+  // setorigin(self, self.owner.origin + v_up*20 - v_right*1 -
+//  v_forward*9);
+   setorigin (self, self.owner.origin);
+   self.nextthink = time;
+
+	self.angles_y = self.owner.v_angle_y - 27;
+	self.angles_x =  0 - self.owner.v_angle_x - 60;
+//   self.angles_y = self.owner.angles_y - 27;
+};
+
+
+void() HauntHead_Spawn =
+{
+   local entity temp;
+   
+   temp = spawn();
+   temp.movetype = MOVETYPE_FLY; 
+   temp.solid = SOLID_NOT;
+   temp.owner = self;
+   setorigin(temp, self.origin);
+   setsize(temp, '0 0 0', '0 0 0');
+   setmodel(temp, "progs/h_player.mdl");
+   temp.think = HauntHead_Think;
+   temp.nextthink = time;
+   temp.angles_x = -60;
+   temp.angles_z = -30;
+   temp.colormap = self.colormap;
+   self.runent = temp;
+};
+
+void () Rune_Head_Button =
+	{
+	if (self.runevar == 0)
+		{
+
+		self.runetime = self.modelindex;
+		setmodel (self, "");
+		self.modelindex = modelindex_none;
+		setsize (self, '-10 -10 -10', '10 10 10');
+		self.runevar = 1;
+		self.miscflag = self.weapon;
+		self.weapon = 0;
+		self.movetype = MOVETYPE_FLY;
+		self.weaponmodel = "";
+		HauntHead_Spawn ();
+		centerprint (self, "You became a Haunted Head!\n");
+		}
+	else
+		{
+		setmodel (self, "progs/player.mdl");
+		self.modelindex = self.runetime;
+		setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
+		self.runevar = 0;
+		self.weapon = self.miscflag;
+		self.miscflag = 0;
+		self.movetype = MOVETYPE_WALK;
+
+		centerprint (self, "You are normal again.\n");
+		W_SetCurrentAmmo ();
+		}
+	};
+
+
+void () Rune_Head_Float =
+	{
+	if (self.runevar == 1)
+		{
+		Rune_Fly ();
+		}
+	};
+
+void (vector bite_dir) Rune_Head_Bite =
+	{
+	local vector des;
+
+	des = self.origin + bite_dir * 30;
+	traceline (self.origin, des, FALSE, self);
+
+	if (trace_ent.solid != SOLID_BSP)
+		{
+		//chomp sound
+		//centerprint (self, "CHOMP!!\n");
+		sound (self, CHAN_WEAPON, "shambler/smack.wav", 1,ATTN_NORM);
+		T_Damage (trace_ent, self, self, 50);
+		}
+	else
+		//centerprint (self, "bite!\n");
+		//gnashing sound
+		sound(self, CHAN_WEAPON, "knight/idle.wav", 1, ATTN_NORM);
+
+	};
