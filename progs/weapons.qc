@@ -782,6 +782,12 @@ PLAYER WEAPON USE
 
 void() W_SetCurrentAmmo =
 {
+   // RSERV: Don't switch weapons if in Haunted Head mode.
+	if (other.runetype == RN_HEAD && other.runevar == 1)
+   {
+      return;
+   }
+
 	player_run ();		// get out of any weapon firing states
 
 	self.items = self.items - ( self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS) );
@@ -873,8 +879,7 @@ float() W_CheckNoAmmo =
 	if (self.currentammo > 0)
 		return TRUE;
 
-	if (self.weapon == IT_AXE || (self.runetype == RN_HEAD &&
-		self.runevar == 1) )
+	if (self.weapon == IT_AXE || (self.runetype == RN_HEAD && self.runevar == 1) )
 		return TRUE;
 
 	self.weapon = W_BestWeapon ();
