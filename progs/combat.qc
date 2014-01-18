@@ -74,8 +74,8 @@ void(entity targ, entity attacker) Killed =
 	if (self.runetype == RN_GHOST && self.runevar != 0)
 		Rune_Ghost_Button ();
 
-	if (self.miscent.runetype == RN_GHOST && self.miscent.runevar > 0)
-		Rune_Ghost_Toggle (self.miscent);
+	if (self.egongrabber.runetype == RN_GHOST && self.egongrabber.runevar > 0 && self.egongrabber.runent == self)
+		Rune_Ghost_Toggle (self.egongrabber);
 
 	if (self.movetype == MOVETYPE_PUSH || self.movetype == MOVETYPE_NONE)
 	{	// doors, triggers, etc

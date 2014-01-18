@@ -245,7 +245,7 @@ entity runespawn;
 .vector runevector;
 
 .float miscflag;
-.entity miscent;
+.entity egongrabber;
 
 //For the title message thingy
 .float motd_time;

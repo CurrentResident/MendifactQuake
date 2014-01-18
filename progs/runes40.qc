@@ -633,7 +633,7 @@ void () Rune_Ghost_Button =
 			self.runetime = time;
 			self.runevar = vlen (trace_endpos - org) + 18.0;
 			grabee.effects = grabee.effects | EF_BRIGHTFIELD;
-			grabee.miscent = self;
+			grabee.egongrabber = self;
 
 //			bprint ("Grabbing ");
 //			bprint (self.runent.classname);

@@ -918,8 +918,8 @@ void() W_Attack =
 		return;
 	// RSERV:  To help improve balance, allow grabbed people to shoot back.
    //         Thus this is commented out.
-   //else if (self.miscent.runent == self && self.miscent.runevar != 0 
-	//	&& self.miscent.runetype == RN_GHOST)
+   //else if (self.egongrabber.runent == self && self.egongrabber.runevar != 0 
+	//	&& self.egongrabber.runetype == RN_GHOST)
 	//	return;
 
 //RUNE SERV: So much stuff here.. prevents lag.
