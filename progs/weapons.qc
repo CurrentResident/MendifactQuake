@@ -1363,9 +1363,9 @@ void() ImpulseCommands =
        //Give yourself a rune
         if (self.impulse > 100 && self.impulse <= (100 + TOTAL_RUNETYPE)) //If impulse is 101 to 121
         {
-         if ((self.impulse - 100) != self.runetype //If it's not the rune you curently have.
-          && !(self.runetype == RN_SHIELD && self.runevar == 1) //If you're not currently shielded.
-          && !deathmatch/*==7*/) //If you're not in deathmatch
+         if ((self.impulse - 100) != self.runetype                // If it's not the rune you curently have.
+          && !(self.runetype == RN_SHIELD && self.runevar == 1)   // If you're not currently shielded.
+          && (deathmatch == 8 || deathmatch == 0))                // If you're in special "test" DM or not DM.
          {           
            self.runetype = self.impulse - 100;
            self.effects = self.effects | EF_MUZZLEFLASH;
