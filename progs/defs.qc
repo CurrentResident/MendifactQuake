@@ -16,13 +16,13 @@ float		time;
 float		frametime;
 
 float		force_retouch;		// force all entities to touch triggers
-								// next frame.  this is needed because
-								// non-moving things don't normally scan
-								// for triggers, and when a trigger is
-								// created (like a teleport trigger), it
-								// needs to catch everything.
-								// decremented each frame, so set to 2
-								// to guarantee everything is touched
+// next frame.  this is needed because
+// non-moving things don't normally scan
+// for triggers, and when a trigger is
+// created (like a teleport trigger), it
+// needs to catch everything.
+// decremented each frame, so set to 2
+// to guarantee everything is touched
 string		mapname;
 
 float		deathmatch;
@@ -30,7 +30,7 @@ float		coop;
 float		teamplay;
 
 float		serverflags;		// propagated from level to level, used to
-								// keep track of completed episodes
+// keep track of completed episodes
 
 float		total_secrets;
 float		total_monsters;
@@ -45,9 +45,9 @@ float		parm1, parm2, parm3, parm4, parm5, parm6, parm7, parm8, parm9, parm10, pa
 
 //
 // global variables set by built in functions
-//	
+//
 vector		v_forward, v_up, v_right;	// set by makevectors()
-	
+
 // set by traceline / tracebox
 float		trace_allsolid;
 float		trace_startsolid;
@@ -77,11 +77,11 @@ void() 		PutClientInServer;		// call after setting the parm1... parms
 void()		ClientDisconnect;
 
 void()		SetNewParms;			// called when a client first connects to
-									// a server. sets parms so they can be
-									// saved off for restarts
+// a server. sets parms so they can be
+// saved off for restarts
 
 void()		SetChangeParms;			// call to set parms for self so they can
-									// be saved for a level transition
+// be saved for a level transition
 
 
 //================================================
@@ -291,7 +291,7 @@ float RN_IMPACT = 27;
 float RN_VENG = 28;
 float RN_SHUB = 29;
 float RN_REPEL = 30;
-float RN_PHASE = 31; 
+float RN_PHASE = 31;
 float RN_SHAMB = 32;
 float RN_DUAL = 33;
 float RN_WEIRD = 34;
@@ -534,7 +534,7 @@ float		skill;
 .void()		th_run;
 .void()		th_missile;
 .void()		th_melee;
-.void(entity attacker, float damage)		th_pain;
+.void (entity attacker, float damage)		th_pain;
 .void()		th_die;
 
 .entity		oldenemy;		// mad at this player before taking damage
@@ -573,8 +573,8 @@ float	AS_MISSILE		= 4;
 .float		axhitme;
 
 .float		show_hostile;	// set to time+0.2 whenever a client fires a
-							// weapon or takes damage.  Used to alert
-							// monsters that otherwise would let the player go
+// weapon or takes damage.  Used to alert
+// monsters that otherwise would let the player go
 .float		jump_flag;		// player jump flag
 .float		swim_flag;		// player swimming sound flag
 .float		air_finished;	// when time > air_finished, start drowning
@@ -613,12 +613,12 @@ float	AS_MISSILE		= 4;
 //
 .float		aflag;
 .float		dmg;			// damage done by door when hit
-	
+
 //
 // misc
 //
 .float		cnt; 			// misc flag
-	
+
 //
 // subs
 //
@@ -650,83 +650,83 @@ float	AS_MISSILE		= 4;
 
 
 //===========================================================================
-	
+
 
 //
 // builtin functions
 //
 
-void(vector ang)	makevectors		= #1;		// sets v_forward, etc globals
-void(entity e, vector o) setorigin	= #2;
-void(entity e, string m) setmodel	= #3;		// set movetype and solid first
-void(entity e, vector min, vector max) setsize = #4;
+void (vector ang)	makevectors		= #1;		// sets v_forward, etc globals
+void (entity e, vector o) setorigin	= #2;
+void (entity e, string m) setmodel	= #3;		// set movetype and solid first
+void (entity e, vector min, vector max) setsize = #4;
 // #5 was removed
 void() break						= #6;
 float() random						= #7;		// returns 0 - 1
-void(entity e, float chan, string samp, float vol, float atten) sound = #8;
-vector(vector v) normalize			= #9;
-void(string e) error				= #10;
-void(string e) objerror				= #11;
-float(vector v) vlen				= #12;
-float(vector v) vectoyaw			= #13;
+void (entity e, float chan, string samp, float vol, float atten) sound = #8;
+vector (vector v) normalize			= #9;
+void (string e) error				= #10;
+void (string e) objerror				= #11;
+float (vector v) vlen				= #12;
+float (vector v) vectoyaw			= #13;
 entity() spawn						= #14;
-void(entity e) remove				= #15;
+void (entity e) remove				= #15;
 
 // sets trace_* globals
 // nomonsters can be:
 // An entity will also be ignored for testing if forent == test,
 // forent->owner == test, or test->owner == forent
 // a forent of world is ignored
-void(vector v1, vector v2, float nomonsters, entity forent) traceline = #16;	
+void (vector v1, vector v2, float nomonsters, entity forent) traceline = #16;
 
 entity() checkclient				= #17;	// returns a client to look for
-entity(entity start, .string fld, string match) find = #18;
-string(string s) precache_sound		= #19;
-string(string s) precache_model		= #20;
-void(entity client, string s)stuffcmd = #21;
-entity(vector org, float rad) findradius = #22;
-void(string s) bprint				= #23;
-void(entity client, string s) sprint = #24;
-void(string s) dprint				= #25;
-string(float f) ftos				= #26;
-string(vector v) vtos				= #27;
+entity (entity start, .string fld, string match) find = #18;
+string (string s) precache_sound		= #19;
+string (string s) precache_model		= #20;
+void (entity client, string s)stuffcmd = #21;
+entity (vector org, float rad) findradius = #22;
+void (string s) bprint				= #23;
+void (entity client, string s) sprint = #24;
+void (string s) dprint				= #25;
+string (float f) ftos				= #26;
+string (vector v) vtos				= #27;
 void() coredump						= #28;		// prints all edicts
 void() traceon						= #29;		// turns statment trace on
 void() traceoff						= #30;
-void(entity e) eprint				= #31;		// prints an entire edict
-float(float yaw, float dist) walkmove	= #32;	// returns TRUE or FALSE
+void (entity e) eprint				= #31;		// prints an entire edict
+float (float yaw, float dist) walkmove	= #32;	// returns TRUE or FALSE
 // #33 was removed
-float(float yaw, float dist) droptofloor= #34;	// TRUE if landed on floor
-void(float style, string value) lightstyle = #35;
-float(float v) rint					= #36;		// round to nearest int
-float(float v) floor				= #37;		// largest integer <= v
-float(float v) ceil					= #38;		// smallest integer >= v
+float (float yaw, float dist) droptofloor = #34;	// TRUE if landed on floor
+void (float style, string value) lightstyle = #35;
+float (float v) rint					= #36;		// round to nearest int
+float (float v) floor				= #37;		// largest integer <= v
+float (float v) ceil					= #38;		// smallest integer >= v
 // #39 was removed
-float(entity e) checkbottom			= #40;		// true if self is on ground
-float(vector v) pointcontents		= #41;		// returns a CONTENT_*
+float (entity e) checkbottom			= #40;		// true if self is on ground
+float (vector v) pointcontents		= #41;		// returns a CONTENT_*
 // #42 was removed
-float(float f) fabs = #43;
-vector(entity e, float speed) aim = #44;		// returns the shooting vector
-float(string s) cvar = #45;						// return cvar.value
-void(string s) localcmd = #46;					// put string into local que
-entity(entity e) nextent = #47;					// for looping through all ents
-void(vector o, vector d, float color, float count) particle = #48;// start a particle effect
+float (float f) fabs = #43;
+vector (entity e, float speed) aim = #44;		// returns the shooting vector
+float (string s) cvar = #45;						// return cvar.value
+void (string s) localcmd = #46;					// put string into local que
+entity (entity e) nextent = #47;					// for looping through all ents
+void (vector o, vector d, float color, float count) particle = #48; // start a particle effect
 void() ChangeYaw = #49;						// turn towards self.ideal_yaw
-											// at self.yaw_speed
+// at self.yaw_speed
 // #50 was removed
-vector(vector v) vectoangles			= #51;
+vector (vector v) vectoangles			= #51;
 
 //
 // direct client message generation
 //
-void(float to, float f) WriteByte		= #52;
-void(float to, float f) WriteChar		= #53;
-void(float to, float f) WriteShort		= #54;
-void(float to, float f) WriteLong		= #55;
-void(float to, float f) WriteCoord		= #56;
-void(float to, float f) WriteAngle		= #57;
-void(float to, string s) WriteString	= #58;
-void(float to, entity s) WriteEntity	= #59;
+void (float to, float f) WriteByte		= #52;
+void (float to, float f) WriteChar		= #53;
+void (float to, float f) WriteShort		= #54;
+void (float to, float f) WriteLong		= #55;
+void (float to, float f) WriteCoord		= #56;
+void (float to, float f) WriteAngle		= #57;
+void (float to, string s) WriteString	= #58;
+void (float to, entity s) WriteEntity	= #59;
 
 //
 // broadcast client message generation
@@ -741,36 +741,36 @@ void(float to, entity s) WriteEntity	= #59;
 // void(string s) bWriteString	= #65;
 // void(entity e) bWriteEntity = #66;
 
-void(float step) movetogoal				= #67;
+void (float step) movetogoal				= #67;
 
-string(string s) precache_file		= #68;	// no effect except for -copy
-void(entity e) makestatic		= #69;
-void(string s) changelevel = #70;
+string (string s) precache_file		= #68;	// no effect except for -copy
+void (entity e) makestatic		= #69;
+void (string s) changelevel = #70;
 
 //#71 was removed
 
-void(string var, string val) cvar_set = #72;	// sets cvar.value
+void (string var, string val) cvar_set = #72;	// sets cvar.value
 
-void(entity client, string s) centerprint = #73;	// sprint, but in middle
+void (entity client, string s) centerprint = #73;	// sprint, but in middle
 
-void(vector pos, string samp, float vol, float atten) ambientsound = #74;
+void (vector pos, string samp, float vol, float atten) ambientsound = #74;
 
-string(string s) precache_model2	= #75;		// registered version only
-string(string s) precache_sound2	= #76;		// registered version only
-string(string s) precache_file2		= #77;		// registered version only
+string (string s) precache_model2	= #75;		// registered version only
+string (string s) precache_sound2	= #76;		// registered version only
+string (string s) precache_file2		= #77;		// registered version only
 
-void(entity e) setspawnparms		= #78;		// set parm1... to the
-												// values at level start
-												// for coop respawn
+void (entity e) setspawnparms		= #78;		// set parm1... to the
+// values at level start
+// for coop respawn
 
 //============================================================================
 
 //
 // subs.qc
 //
-void(vector tdest, float tspeed, void() func) SUB_CalcMove;
-void(entity ent, vector tdest, float tspeed, void() func) SUB_CalcMoveEnt;
-void(vector destangle, float tspeed, void() func) SUB_CalcAngleMove;
+void (vector tdest, float tspeed, void() func) SUB_CalcMove;
+void (entity ent, vector tdest, float tspeed, void() func) SUB_CalcMoveEnt;
+void (vector destangle, float tspeed, void() func) SUB_CalcAngleMove;
 void()  SUB_CalcMoveDone;
 void() SUB_CalcAngleMoveDone;
 void() SUB_Null;
@@ -780,10 +780,10 @@ void() SUB_Remove;
 //
 //	combat.qc
 //
-void(entity targ, entity inflictor, entity attacker, float damage) T_Damage;
+void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 
 
 float (entity e, float healamount, float ignore) T_Heal; // health function
 
-float(entity targ, entity inflictor) CanDamage;
+float (entity targ, entity inflictor) CanDamage;
 

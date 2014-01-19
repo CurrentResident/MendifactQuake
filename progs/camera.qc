@@ -3,7 +3,7 @@
 // main code block
 
 void() Keep_cam_chasing_owner;
-void( float opt ) Remove_chase_cam;
+void ( float opt ) Remove_chase_cam;
 
 // defaults reset every time level starts
 float chasecam_alt, chasecam_dist = 72, chasecam_zofs = 24;
@@ -11,80 +11,82 @@ float chasecam_alt, chasecam_dist = 72, chasecam_zofs = 24;
 
 // Resets weapon model after changing view
 // called by chase cam or player entities
-void( entity player_ent ) Chase_cam_setweapon =
+void ( entity player_ent ) Chase_cam_setweapon =
 {
-   local entity e;
+    local entity e;
 
-	e = self;
-   self = player_ent;
-   W_SetCurrentAmmo ();
-	self = e;	
+    e = self;
+    self = player_ent;
+    W_SetCurrentAmmo ();
+    self = e;
 
 };
 
 // called either by player or chase cam entities (to restart)
-void( entity cam_owner ) Start_chase_cam =
+void ( entity cam_owner ) Start_chase_cam =
 {
 
-	local entity	chase_cam;
+    local entity	chase_cam;
 
-	chase_cam = spawn();
+    chase_cam = spawn();
 
-   chase_cam.owner=cam_owner;
+    chase_cam.owner = cam_owner;
 
-	// turn on bit-flag
-   chase_cam.owner.speed = chase_cam.owner.speed | CHSCAM_ON;
-	
-   chase_cam.solid = SOLID_NOT;
-	chase_cam.movetype = MOVETYPE_FLYMISSILE;
-	
+    // turn on bit-flag
+    chase_cam.owner.speed = chase_cam.owner.speed | CHSCAM_ON;
 
-   chase_cam.angles = chase_cam.owner.angles;
+    chase_cam.solid = SOLID_NOT;
+    chase_cam.movetype = MOVETYPE_FLYMISSILE;
 
-	setmodel (chase_cam, "progs/eyes.mdl" );
-	setsize (chase_cam, '0 0 0', '0 0 0');
-   setorigin( chase_cam, chase_cam.owner.origin );
-	chase_cam.classname = "chase_cam";
-	
-	chase_cam.nextthink = time + 0.1;	
-	chase_cam.think = Keep_cam_chasing_owner;
 
-   msg_entity = chase_cam.owner;                         // target of message
-	WriteByte (MSG_ONE, SVC_SETVIEWPORT);  
-	WriteEntity (MSG_ONE, chase_cam);           // view port
+    chase_cam.angles = chase_cam.owner.angles;
 
-//RUNE SERV TEMP MOD:
-//   Chase_cam_setweapon( cam_owner );
-   cam_owner.weaponmodel = "";
+    setmodel (chase_cam, "progs/eyes.mdl" );
+    setsize (chase_cam, '0 0 0', '0 0 0');
+    setorigin ( chase_cam, chase_cam.owner.origin );
+    chase_cam.classname = "chase_cam";
 
-   // distance clipping
-   chase_cam.ammo_shells = chasecam_dist;
-   // offset choice
-   chase_cam.ammo_cells = 0;
+    chase_cam.nextthink = time + 0.1;
+    chase_cam.think = Keep_cam_chasing_owner;
+
+    msg_entity = chase_cam.owner;                         // target of message
+    WriteByte (MSG_ONE, SVC_SETVIEWPORT);
+    WriteEntity (MSG_ONE, chase_cam);           // view port
+
+    //RUNE SERV TEMP MOD:
+    //   Chase_cam_setweapon( cam_owner );
+    cam_owner.weaponmodel = "";
+
+    // distance clipping
+    chase_cam.ammo_shells = chasecam_dist;
+    // offset choice
+    chase_cam.ammo_cells = 0;
 
 };
 
 // secondary think for cam entities
 void() Reable_chase_cam =
 {
-   self.nextthink = time + 0.1;
+    self.nextthink = time + 0.1;
 
-   // debug
-   // sprint( self.owner, "Reable_chase_cam was called\n" );
+    // debug
+    // sprint( self.owner, "Reable_chase_cam was called\n" );
 
-   // clears bug of not being able to hit fire to restart
-   // after dying in water
-   if (self.owner.health <= 0)
-   {
-      remove( self );
-      return;
-   }
+    // clears bug of not being able to hit fire to restart
+    // after dying in water
+    if (self.owner.health <= 0)
+    {
+        remove ( self );
+        return;
+    }
 
-   if (  self.owner.waterlevel )
-      return;
+    if (  self.owner.waterlevel )
+    {
+        return;
+    }
 
-   Start_chase_cam( self.owner );
-   remove( self );
+    Start_chase_cam ( self.owner );
+    remove ( self );
 
 };
 
@@ -92,30 +94,32 @@ void() Reable_chase_cam =
 // opt values
 // TRUE = remove completely
 // FALSE = remove view but keep alive with Reable_chase_cam();
-void( float opt ) Remove_chase_cam =
+void ( float opt ) Remove_chase_cam =
 {
-	// turn off bit-flag
-   if ( (self.owner.speed & CHSCAM_ON) )
-      self.owner.speed = self.owner.speed - CHSCAM_ON;
+    // turn off bit-flag
+    if ( (self.owner.speed & CHSCAM_ON) )
+    {
+        self.owner.speed = self.owner.speed - CHSCAM_ON;
+    }
 
-   // makes entity appear gone even if going into keep alive state
-   setmodel( self, "" );
-   self.velocity = '0 0 0';
-	
-   // set view-point back to normal
-	msg_entity = self.owner;      // target of message
-	WriteByte (MSG_ONE, SVC_SETVIEWPORT);  
-	WriteEntity (MSG_ONE, self.owner);           // view port
+    // makes entity appear gone even if going into keep alive state
+    setmodel ( self, "" );
+    self.velocity = '0 0 0';
 
-   Chase_cam_setweapon( self.owner );
+    // set view-point back to normal
+    msg_entity = self.owner;      // target of message
+    WriteByte (MSG_ONE, SVC_SETVIEWPORT);
+    WriteEntity (MSG_ONE, self.owner);           // view port
 
-   if ( !opt )
-   {
-      self.nextthink = time + 0.1;
-      self.think = Reable_chase_cam;
-   }
-   else
-      remove( self );
+    Chase_cam_setweapon ( self.owner );
+
+    if ( !opt )
+    {
+        self.nextthink = time + 0.1;
+        self.think = Reable_chase_cam;
+    }
+    else
+    { remove ( self ); }
 
 };
 
@@ -132,161 +136,195 @@ main think function for cam entities
 */
 void() Keep_cam_chasing_owner =
 {
-	local vector	spot2, dir;
-   local float dist, cap;
+    local vector	spot2, dir;
+    local float dist, cap;
 
-   local float  f_f, f_r;
+    local float  f_f, f_r;
 
-   self.nextthink = time + 0.1; 
+    self.nextthink = time + 0.1;
 
-   // check if player turned off
-	// or in water
-   if (! (self.owner.speed & CHSCAM_ON))
-	{
-      Remove_chase_cam( TRUE );
-		return;
-	}
-   if ( self.owner.waterlevel )
-   {
-      if (self.owner.health > 0)
-      {
-         Remove_chase_cam( FALSE );
-         return;
-      }
-   }
-	
-   // get player velocity relative to player's
-   // current yaw
-   // f_f (based on running calcs (maxspeed = 400)
-   //  (back ~= 640, forward ~= 0)
-   // f_r
-   //  (left ~= 640, right ~= 0)
-   dir_y = self.owner.v_angle_y;
-   makevectors( dir );
-   f_f = vlen( (v_forward * 320) - self.owner.velocity );
-   f_r = vlen( (v_right * 320) - self.owner.velocity );
+    // check if player turned off
+    // or in water
+    if (! (self.owner.speed & CHSCAM_ON))
+    {
+        Remove_chase_cam ( TRUE );
+        return;
+    }
 
-   // held for use after second makevectors call for
-   // v_forward based only on yaw
-   dir = v_forward;
+    if ( self.owner.waterlevel )
+    {
+        if (self.owner.health > 0)
+        {
+            Remove_chase_cam ( FALSE );
+            return;
+        }
+    }
 
-   /*
-   local string s;
-   sprint( self.owner, "\n\n f_f = " );
-   s = ftos( f_f );
-   sprint( self.owner, s );
-   sprint( self.owner, "\n f_r = " );
-   s = ftos( f_r );
-   sprint( self.owner, s );
-   sprint( self.owner, "\n" );
-   */
+    // get player velocity relative to player's
+    // current yaw
+    // f_f (based on running calcs (maxspeed = 400)
+    //  (back ~= 640, forward ~= 0)
+    // f_r
+    //  (left ~= 640, right ~= 0)
+    dir_y = self.owner.v_angle_y;
+    makevectors ( dir );
+    f_f = vlen ( (v_forward * 320) - self.owner.velocity );
+    f_r = vlen ( (v_right * 320) - self.owner.velocity );
 
-   if (self.owner.speed & CHSCAM_ALT)
-   {
-      if (f_f < 160 || self.owner.v_angle_x < -45)
-         self.ammo_cells = 0;
-      else if (f_r < 80)
-         self.ammo_cells = 1;
-      else if (f_r > 560)
-         self.ammo_cells = 2;
-   }
-   else
-      self.ammo_cells = 0;
+    // held for use after second makevectors call for
+    // v_forward based only on yaw
+    dir = v_forward;
 
+    /*
+    local string s;
+    sprint( self.owner, "\n\n f_f = " );
+    s = ftos( f_f );
+    sprint( self.owner, s );
+    sprint( self.owner, "\n f_r = " );
+    s = ftos( f_r );
+    sprint( self.owner, s );
+    sprint( self.owner, "\n" );
+    */
 
-   makevectors( self.owner.v_angle );
-
-   // set spot before clipping
-   spot2 = self.owner.origin - (v_forward * self.ammo_shells);
-
-   if (!self.ammo_cells)
-   {
-      if (self.owner.v_angle_x > 16)
-      {
-         // dir is first v_forward based on yaw only
-         spot2 = spot2 + (dir * (self.owner.v_angle_x - 16) );
-         cap = chasecam_zofs - ((self.owner.v_angle_x - 16) * 0.2);
-         if (cap < 0) cap = 0;
-         spot2_z = spot2_z + cap;
-      }
-      else
-         spot2_z = spot2_z + chasecam_zofs;
-   }
-   else if (self.ammo_cells == 1)
-      spot2 = spot2 - (v_right * (chasecam_zofs));
-   else
-      spot2 = spot2 + (v_right * (chasecam_zofs));
+    if (self.owner.speed & CHSCAM_ALT)
+    {
+        if (f_f < 160 || self.owner.v_angle_x < -45)
+        {
+            self.ammo_cells = 0;
+        }
+        else if (f_r < 80)
+        {
+            self.ammo_cells = 1;
+        }
+        else if (f_r > 560)
+        {
+            self.ammo_cells = 2;
+        }
+    }
+    else
+    { self.ammo_cells = 0; }
 
 
-   traceline (self.owner.origin, spot2, FALSE, self.owner);
+    makevectors ( self.owner.v_angle );
 
-   // avoids most hang-ups along walls
-   spot2 = trace_endpos + ( v_forward * 2 );
+    // set spot before clipping
+    spot2 = self.owner.origin - (v_forward * self.ammo_shells);
 
-   // for fading from walls and up-aim auto rising
-   self.ammo_shells = 10 + vlen(trace_endpos - self.owner.origin);
+    if (!self.ammo_cells)
+    {
+        if (self.owner.v_angle_x > 16)
+        {
+            // dir is first v_forward based on yaw only
+            spot2 = spot2 + (dir * (self.owner.v_angle_x - 16) );
+            cap = chasecam_zofs - ((self.owner.v_angle_x - 16) * 0.2);
 
+            if (cap < 0)
+            {
+                cap = 0;
+            }
 
-   // clip from ceiling if too close
-   traceline (spot2, spot2 + '0 0 32', FALSE, self.owner );
-   if (trace_fraction < 1 )
-   {
-      dir = trace_endpos - '0 0 32';
-
-      traceline (spot2, spot2 - '0 0 32', FALSE, self.owner );
-      if (trace_fraction == 1)
-         spot2 = dir;
-   }
-
-
-   dir = normalize(spot2 - self.origin);
-   dist = vlen(spot2 - self.origin);
-
-   
-   traceline( self.origin, spot2, FALSE, self.owner );
-   if ( trace_fraction == 1 )
-	{
-      self.angles = self.owner.angles;
-
-      cap = dist * 0.2;
-
-      if (cap > 5.2)
-         self.velocity = dir * dist * 5.2;
-      else if (cap > 1)
-         self.velocity = dir * dist * cap;
-      else
-         self.velocity = dir * dist;
-
-      // tighten up if owner running backwards
-      if ( f_f > 560)
-      {
-         self.velocity = self.velocity * 2;
-      }
-      
-   }
-	else
-		setorigin( self, spot2 );
+            spot2_z = spot2_z + cap;
+        }
+        else
+        {
+            spot2_z = spot2_z + chasecam_zofs;
+        }
+    }
+    else if (self.ammo_cells == 1)
+    {
+        spot2 = spot2 - (v_right * (chasecam_zofs));
+    }
+    else
+    { spot2 = spot2 + (v_right * (chasecam_zofs)); }
 
 
-   // fade back from walls
-   self.ammo_shells = self.ammo_shells + 4;
-   if (self.ammo_shells > chasecam_dist)
-      self.ammo_shells = chasecam_dist;
+    traceline (self.owner.origin, spot2, FALSE, self.owner);
 
-   // respawn if missile ent. get's hung up
-   if( self.oldorigin == self.origin )
-   {
-      if( dist > 30 )
-         self.ammo_nails = self.ammo_nails + 1;
+    // avoids most hang-ups along walls
+    spot2 = trace_endpos + ( v_forward * 2 );
 
-   }
-   if( self.ammo_nails > 3 )
-   {
-      Start_chase_cam( self.owner );
-      remove( self );
-      return;
-   }
-   self.oldorigin = self.origin;
+    // for fading from walls and up-aim auto rising
+    self.ammo_shells = 10 + vlen (trace_endpos - self.owner.origin);
+
+
+    // clip from ceiling if too close
+    traceline (spot2, spot2 + '0 0 32', FALSE, self.owner );
+
+    if (trace_fraction < 1 )
+    {
+        dir = trace_endpos - '0 0 32';
+
+        traceline (spot2, spot2 - '0 0 32', FALSE, self.owner );
+
+        if (trace_fraction == 1)
+        {
+            spot2 = dir;
+        }
+    }
+
+
+    dir = normalize (spot2 - self.origin);
+    dist = vlen (spot2 - self.origin);
+
+
+    traceline ( self.origin, spot2, FALSE, self.owner );
+
+    if ( trace_fraction == 1 )
+    {
+        self.angles = self.owner.angles;
+
+        cap = dist * 0.2;
+
+        if (cap > 5.2)
+        {
+            self.velocity = dir * dist * 5.2;
+        }
+        else if (cap > 1)
+        {
+            self.velocity = dir * dist * cap;
+        }
+        else
+        {
+            self.velocity = dir * dist;
+        }
+
+        // tighten up if owner running backwards
+        if ( f_f > 560)
+        {
+            self.velocity = self.velocity * 2;
+        }
+
+    }
+    else
+    { setorigin ( self, spot2 ); }
+
+
+    // fade back from walls
+    self.ammo_shells = self.ammo_shells + 4;
+
+    if (self.ammo_shells > chasecam_dist)
+    {
+        self.ammo_shells = chasecam_dist;
+    }
+
+    // respawn if missile ent. get's hung up
+    if ( self.oldorigin == self.origin )
+    {
+        if ( dist > 30 )
+        {
+            self.ammo_nails = self.ammo_nails + 1;
+        }
+
+    }
+
+    if ( self.ammo_nails > 3 )
+    {
+        Start_chase_cam ( self.owner );
+        remove ( self );
+        return;
+    }
+
+    self.oldorigin = self.origin;
 
 };
 
@@ -294,34 +332,34 @@ void() Keep_cam_chasing_owner =
 void() Toggle_chase_cam =
 {
 
-   if( (self.speed & CHSCAM_ON) )
-	{
-		// will be noticed by next think
-		// of player's chase cam entity
-      self.speed = self.speed - CHSCAM_ON;
-	}
-	else
-	{
-      Start_chase_cam( self );
-	}
-		
+    if ( (self.speed & CHSCAM_ON) )
+    {
+        // will be noticed by next think
+        // of player's chase cam entity
+        self.speed = self.speed - CHSCAM_ON;
+    }
+    else
+    {
+        Start_chase_cam ( self );
+    }
+
 };
 
 // called by player only
 void() Toggle_chase_type =
 {
 
-   if( (self.speed & CHSCAM_ALT) )
-   {
-      self.speed = self.speed - CHSCAM_ALT;
-      sprint( self, "View tracking: normal\n" );
-   }
-   else
-   {
-      self.speed = self.speed | CHSCAM_ALT;
-      sprint( self, "View tracking: strafeing\n" );
-   }
-		
+    if ( (self.speed & CHSCAM_ALT) )
+    {
+        self.speed = self.speed - CHSCAM_ALT;
+        sprint ( self, "View tracking: normal\n" );
+    }
+    else
+    {
+        self.speed = self.speed | CHSCAM_ALT;
+        sprint ( self, "View tracking: strafeing\n" );
+    }
+
 };
 
 ////////////////////////////////////////////
@@ -383,57 +421,60 @@ void ()	SDR_SightMake =
 */
 
 // targeter ent. think function
-void() LaserTargeterTrack = {
-   local vector dir, src;
+void() LaserTargeterTrack =
+{
+    local vector dir, src;
 
-   if (! (self.owner.speed & LASERTARG_ON))
-   {
-      remove( self );
-      return;
-   }
+    if (! (self.owner.speed & LASERTARG_ON))
+    {
+        remove ( self );
+        return;
+    }
 
-   makevectors( self.owner.v_angle );
-	
-   src = self.owner.origin;
+    makevectors ( self.owner.v_angle );
 
-   src = self.owner.origin + v_forward * 10;
-   src_z = self.owner.absmin_z + self.owner.size_z * 0.7;
+    src = self.owner.origin;
 
-   dir = aim( self.owner, 100000 );
-   traceline( src,  src + dir * 320, FALSE, self.owner);
+    src = self.owner.origin + v_forward * 10;
+    src_z = self.owner.absmin_z + self.owner.size_z * 0.7;
 
-   src = 0.1 * src + 0.9 * trace_endpos;
+    dir = aim ( self.owner, 100000 );
+    traceline ( src,  src + dir * 320, FALSE, self.owner);
 
-   setorigin( self, src );
+    src = 0.1 * src + 0.9 * trace_endpos;
 
-   self.nextthink = time + 0.1;
+    setorigin ( self, src );
+
+    self.nextthink = time + 0.1;
 };
 
-void( entity targ_owner ) LaserTargeterToggle =
+void ( entity targ_owner ) LaserTargeterToggle =
 {
 
-   local entity e;
+    local entity e;
 
-   if( (targ_owner.speed & LASERTARG_ON) )
-      targ_owner.speed = targ_owner.speed - LASERTARG_ON;
-   else
-   {
-      targ_owner.speed = targ_owner.speed | LASERTARG_ON;
-      
-      e = spawn();
-      e.owner = targ_owner;
+    if ( (targ_owner.speed & LASERTARG_ON) )
+    {
+        targ_owner.speed = targ_owner.speed - LASERTARG_ON;
+    }
+    else
+    {
+        targ_owner.speed = targ_owner.speed | LASERTARG_ON;
 
-      e.movetype = MOVETYPE_NONE;
-      e.solid = SOLID_NOT;
+        e = spawn();
+        e.owner = targ_owner;
 
-      setmodel( e, "progs/s_bubble.spr" );
-      setsize( e, VEC_ORIGIN, VEC_ORIGIN );    
-      setorigin( e, e.owner.origin );
+        e.movetype = MOVETYPE_NONE;
+        e.solid = SOLID_NOT;
 
-      e.nextthink = time + 0.1;
-      e.think = LaserTargeterTrack;
+        setmodel ( e, "progs/s_bubble.spr" );
+        setsize ( e, VEC_ORIGIN, VEC_ORIGIN );
+        setorigin ( e, e.owner.origin );
 
-	}
+        e.nextthink = time + 0.1;
+        e.think = LaserTargeterTrack;
+
+    }
 
 };
 ////////////////////////////////////////////
@@ -442,17 +483,20 @@ void( entity targ_owner ) LaserTargeterToggle =
 void() Chase_cam_lvlstart_think =
 {
 
-   local string s;
+    local string s;
 
-   if ( (self.owner.speed & CHSCAM_ON) )
-      Start_chase_cam( self.owner );
-   if ( (self.owner.speed & LASERTARG_ON) )
-   {
-      self.owner.speed = self.owner.speed - LASERTARG_ON;
-      LaserTargeterToggle( self.owner );
-   }
+    if ( (self.owner.speed & CHSCAM_ON) )
+    {
+        Start_chase_cam ( self.owner );
+    }
 
-   remove( self );
+    if ( (self.owner.speed & LASERTARG_ON) )
+    {
+        self.owner.speed = self.owner.speed - LASERTARG_ON;
+        LaserTargeterToggle ( self.owner );
+    }
+
+    remove ( self );
 
 };
 
@@ -463,20 +507,20 @@ void() Chase_cam_lvlstart_think =
 void() Chase_cam_level_start =
 {
 
-   local entity e;
+    local entity e;
 
-      e = spawn();
-      e.owner = self;
+    e = spawn();
+    e.owner = self;
 
-      e.movetype = MOVETYPE_NONE;
-      e.solid = SOLID_NOT;
+    e.movetype = MOVETYPE_NONE;
+    e.solid = SOLID_NOT;
 
-      setmodel( e, "" );
-      setsize( e, VEC_ORIGIN, VEC_ORIGIN );    
-      setorigin( e, e.owner.origin );
+    setmodel ( e, "" );
+    setsize ( e, VEC_ORIGIN, VEC_ORIGIN );
+    setorigin ( e, e.owner.origin );
 
-      e.nextthink = time + 0.2;
-      e.think = Chase_cam_lvlstart_think;
+    e.nextthink = time + 0.2;
+    e.think = Chase_cam_lvlstart_think;
 
 };
 
