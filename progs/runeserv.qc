@@ -703,13 +703,13 @@ void (entity guy) ServerMsg =
 
 entity() SelectRuneSpawnPoint =
 {
-    local float runec;
-    local entity e;
+    local float runec, iters;
 
     //runec is to keep them from clustering
     runec = 0;
+    iters = random() * 100 + 10;
 
-    while (runec < random() * 100 + 10)
+    while (runec < iters)
     {
         runespawn = nextent (runespawn);
         runec = runec + 1;
@@ -718,9 +718,9 @@ entity() SelectRuneSpawnPoint =
     runec = 0;
     //Now runec checks for HUGE HUGE loops to prevent crashing
 
-    while (((runespawn.classname == "player")
-    || (runespawn.classname == "rune"))
-    && runec < 1500)
+    while ( (   (runespawn.classname == "player")
+            ||  (runespawn.classname == "rune"))
+            && runec < 1500)
     {
         runespawn = nextent (runespawn);
         runec = runec + 1;
@@ -729,20 +729,90 @@ entity() SelectRuneSpawnPoint =
     return runespawn;
 };
 
-void() Rune_Move =
+float(entity rune) Rune_Must_Move =
 {
-    local entity temp;
+    local float i;
 
-    temp = SelectRuneSpawnPoint();
-    setorigin (self, temp.origin);
+    i = pointcontents (rune.origin);
 
-    self.nextthink = time + 60 + random() * 60;
+    if ((i == CONTENT_SOLID && ! (self.flags & FL_ONGROUND)) ||
+         i == CONTENT_LAVA)
+    {
+        return i;
+    }
+    return 0;
+};
 
-    self.flags = self.flags - (self.flags & FL_ONGROUND);
+void() Rune_Recycle =
+{
+    remove (self);
+    runecurrent = runecurrent - 1;
+    Rune_SpawnAll (1);
+};
 
-    self.velocity_x = crandom() * 500;
-    self.velocity_y = crandom() * 500;
-    self.velocity_z = random() * 500;
+void() Rune_Clip_Check =
+{
+    local string tempstring;
+    local float     remove_reason;
+
+    // Debug info:
+    //  BRIGHT FIELD = we think it could be a good idea to recycle this rune.
+    //  BRIGHT LIGHT = it's on the ground.
+    //
+    // Idiosyncrasies about rune clipping to world:
+    //
+    // pointcontents SOLID is unreliable for seeing if we're making contact with the world.  ON GROUND
+    // is much better for that.  However, SOLID is useful for detecting if we're outside the world.
+    //
+    // 1.  Sometimes a rune touches the world with pointcontents NOT SOLID and NOT ON GROUND.
+    //      In these cases, the rune is okay, it's just bouncing or flying around.
+    // 2.  If the rune touches the world and pointcontents is SOLID but NOT ON GROUND,
+    //      it's either hit a wall or floor very briefly, or is falling outside the world.
+    //      We allow a brief period to pass in this state before recycling.
+    // 3.  If the rune is SOLID and ON GROUND, it's at rest and is okay.
+    // 4.  If the rune is NOT SOLID and ON GROUND, that's also okay at rest.
+    // 5.  Just delete right away if LAVA.
+    // 
+
+    //DEBUG if (self.flags & FL_ONGROUND)
+    //DEBUG {
+    //DEBUG     self.effects = self.effects | EF_BRIGHTLIGHT;
+    //DEBUG }
+    //DEBUG else
+    //DEBUG {
+    //DEBUG     self.effects = self.effects - (self.effects & EF_BRIGHTLIGHT);
+    //DEBUG }
+
+    remove_reason = Rune_Must_Move (self);
+    if (remove_reason)
+    {
+        // Remove immediately if touching lava.
+        // Otherwise, let runevar time elapse first.
+        if (self.runevar < time || remove_reason == CONTENT_LAVA)
+        {
+            // Set touch to null because if the rune is falling outside the map, the Touch
+            // will fire and reset think to this function.
+            // 
+            //DEBUG bprint ("Attempting to clean up\n");
+            self.think  = Rune_Recycle;
+            self.touch  = SUB_Null;
+        }
+
+        self.nextthink = time;
+    }
+    else
+    {
+        //DEBUG tempstring = ftos (self.runevar - time);
+        //DEBUG bprint ("Rune okay with seconds remaining: ");
+        //DEBUG bprint (tempstring);
+        //DEBUG bprint ("\n");
+        //DEBUG self.effects = self.effects - (self.effects & EF_BRIGHTFIELD);
+        //DEBUG self.effects = self.effects - (self.effects & EF_BRIGHTLIGHT);
+
+        self.runevar = 0;
+        self.think = Rune_Recycle;
+        self.nextthink = time + 60 + random() * 60;
+    }
 };
 
 void() Rune_Touch =
@@ -751,15 +821,24 @@ void() Rune_Touch =
     local string temtex1;
     local float rand;
 
-    if (pointcontents (self.origin) == CONTENT_SOLID
-    || pointcontents (self.origin) == CONTENT_LAVA)
+    if (Rune_Must_Move (self))
     {
-        self.nextthink = time;
+        // Check to see if we're still in the same "must move" condition for a short duration.
+        self.think      = Rune_Clip_Check;
+        self.nextthink  = time;
+
+        if (self.runevar == 0)
+        {
+            self.runevar = time + 0.1;
+        }
+
+        //DEBUG self.effects = self.effects | EF_BRIGHTFIELD;
     }
 
     if (other == world)
     {
         sound (self, CHAN_WEAPON, "weapons/tink1.wav", 1.0, ATTN_NORM);
+        //DEBUG eprint (self);
     }
 
     if (other.classname != "player")
@@ -780,8 +859,6 @@ void() Rune_Touch =
     other.runetype = self.runetype;
     runecurrent = runecurrent - 1;
 
-    remove (self);
-
     temp = self;
     self = other;
 
@@ -791,12 +868,18 @@ void() Rune_Touch =
     sound (self, CHAN_BODY, "buttons/switch21.wav", 1, ATTN_NORM);
 
     self = temp;
+    remove (self);
+
 };
 
-void (vector sorigin, float xmax, float ymax, float zmax, float type) Rune_Spawn =
+void (vector sorigin, float xmax, float ymax, float zmax) Rune_Spawn =
 {
     local entity rune;
     local float rnd, counter;
+    local float type;
+
+    type = random() * TOTAL_RUNETYPE;
+    type = ceil (type);
 
     rune = spawn();
     setorigin (rune, sorigin);
@@ -832,15 +915,19 @@ void (vector sorigin, float xmax, float ymax, float zmax, float type) Rune_Spawn
         setmodel (rune, "progs/end4.mdl");
     }
 
-    rune.runetype = type;
+    rune.runetype   = type;
+    rune.runevar    = 0;
 
     rune.touch = Rune_Touch;
-    rune.think = Rune_Move;
+    rune.think = Rune_Recycle;
+    rune.nextthink = time + 60 + random() * 60;
+
+    runecurrent = runecurrent + 1;
 };
 
 void (float numspawn) Rune_SpawnAll =
 {
-    local float counter, type;
+    local float counter;
     local entity temp;
 
     counter = 0;
@@ -849,12 +936,7 @@ void (float numspawn) Rune_SpawnAll =
     {
         temp = SelectRuneSpawnPoint();
 
-        type = random() * TOTAL_RUNETYPE;
-        type = ceil (type);
-
-        Rune_Spawn (temp.origin, 500, 500, 500, type);
+        Rune_Spawn (temp.origin, 500, 500, 500);
         counter = counter + 1;
     }
-
-    runecurrent = runecurrent + numspawn;
 };

@@ -1547,6 +1547,7 @@ void() QuadCheat =
 
 //RUNE SERV: Impulse Predefs
 void (float numspawn) Rune_SpawnAll;
+void (vector sorigin, float xmax, float ymax, float zmax) Rune_Spawn;
 void() Rune_Button;
 void() Rune_Activate;
 void() Rune_Tell;
@@ -1616,6 +1617,14 @@ void() ImpulseCommands =
             sound (self, CHAN_BODY, "buttons/switch21.wav", 1, ATTN_NORM);
             Rune_Activate();
         }
+    }
+
+    //Create a rune
+    if (self.impulse == 96 &&
+        (deathmatch == 8 || deathmatch == 0))
+    {
+        makevectors (self.v_angle);
+        Rune_Spawn (self.origin + v_forward * 200, 500, 500, 500);
     }
 
     //Activate ability
