@@ -480,20 +480,9 @@ ClientKill
 Player entered the suicide command
 ============
 */
-
-void (entity tog) Rune_Ghost_Toggle;
-
 void() ClientKill =
 {
-
     bprint (self.netname);
-
-    if (self.egongrabber.runetype == RN_GHOST && self.egongrabber.runevar > 0
-    && self.egongrabber.runent == self)
-    {
-        Rune_Ghost_Toggle (self.egongrabber);
-    }
-
     bprint (" suicides\n");
     set_suicide_frame ();
     self.modelindex = modelindex_player;
@@ -640,7 +629,7 @@ void() PutClientInServer =
     self.runevar = 0;
     self.runevector = '0 0 0';
 
-    self.miscflag = 0;
+    self.head_saved_weapon = 0;
     self.egongrabber = world;
 
     DecodeLevelParms ();
@@ -896,12 +885,6 @@ void() PlayerJump =
     local vector start, end;
 
     if (self.flags & FL_WATERJUMP)
-    {
-        return;
-    }
-
-    if (self.egongrabber.runetype == RN_GHOST && self.egongrabber.runevar > 0
-    && self.egongrabber.runent == self)
     {
         return;
     }

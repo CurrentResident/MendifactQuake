@@ -244,8 +244,8 @@ entity runespawn;
 .float runevar;
 .vector runevector;
 
-.float miscflag;
-.entity egongrabber;
+.float head_saved_weapon;   // Haunted Head: Weapon to switch back to when changing back from Haunted Head mode
+.entity egongrabber;        // Egon: Reference to whomever's grabbed onto me.
 
 //For the title message thingy
 .float motd_time;

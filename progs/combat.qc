@@ -9,9 +9,6 @@ void() monster_death_use;
 void (vector org) spawn_tfog;
 void() Spawn_Weird;
 
-void() Rune_Ghost_Button;
-void (entity tog) Rune_Ghost_Toggle;
-
 //============================================================================
 
 /*
@@ -96,18 +93,6 @@ void (entity targ, entity attacker) Killed =
     if (self.health < -99)
     {
         self.health = -99;    // don't let sbar look bad if a player
-    }
-
-    // RSERV Egon rune
-    //
-    if (self.runetype == RN_GHOST && self.runevar != 0)
-    {
-        Rune_Ghost_Button ();
-    }
-
-    if (self.egongrabber.runetype == RN_GHOST && self.egongrabber.runevar > 0 && self.egongrabber.runent == self)
-    {
-        Rune_Ghost_Toggle (self.egongrabber);
     }
 
     if (self.movetype == MOVETYPE_PUSH || self.movetype == MOVETYPE_NONE)

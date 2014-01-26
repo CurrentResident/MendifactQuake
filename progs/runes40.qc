@@ -220,8 +220,8 @@ void() walkmonster_start;
 
 void() Rune_ShamblerDie =
 {
-    spawn_tfog (self.origin);
     remove (self);
+    remove (self.runent);
 };
 
 void() Rune_ShamblerReloc =
@@ -241,7 +241,8 @@ void() Rune_ShamblerThink =
         {
             self.runent.health = 0;
             Killed (self.runent, self.owner);
-            remove (self.runent);
+            self.think = Rune_ShamblerDie;
+            self.nextthink = time + 2;
         }
         else
         {
@@ -250,12 +251,13 @@ void() Rune_ShamblerThink =
             return;
         }
 
-        remove (self);
         return;
     }
 
     //The end to passive shamblers
-    if (self.runent.enemy == self.runent.owner || self.runent.enemy.health < 1 || self.runent.enemy.classname == "worldspawn")
+    if (self.runent.enemy == self.runent.owner ||
+        self.runent.enemy.health < 1 ||
+        self.runent.enemy.classname == "worldspawn")
     {
         local entity head, selected;
         local float dist;
@@ -313,8 +315,6 @@ void() Rune_ShamblerSpawn =
     sham.th_melee = sham_melee;
     sham.th_missile = sham_magic1;
     sham.th_pain = sham_pain;
-    sham.think = Rune_ShamblerThink;
-    sham.nextthink = time + 1;
     sham.classname = "shambler_slave";
     self.runent = sham;
     sham.owner = self;
@@ -753,41 +753,108 @@ void() Wall_Check =
 };
 
 
+void () Rune_Ghost_Think =
+{
+    // Release conditions:
+    //  * Owner has disowned us / hit the button.
+    //  * Owner has died.
+    //  * Grabee has died.
+    if (self.owner.runent != self ||
+        self.owner.health < 1 ||
+        self.runent.health < 1)
+    {
+        if (self.owner.runent == self)
+        {
+            self.owner.runent = world;
+        }
+        self.runent.effects = self.runent.effects - (self.runent.effects & EF_BRIGHTFIELD);
+        remove (self);
+    }
+    else
+    {
+        setorigin (self, self.owner.origin + '0 0 16');
+        self.nextthink = time;
+
+        if (self.runetime <= time)
+        {
+            local vector place;
+
+            self.runent.flags = self.runent.flags - (self.runent.flags & FL_ONGROUND);
+
+            makevectors (self.owner.v_angle);
+            place = self.origin + v_forward * self.runevar;
+
+            self.runent.velocity = (place - self.runevector) * 5.0;
+            self.runevector = self.runent.origin;
+
+            //This keeps the grabee from firing.
+            //self.runent.attack_finished = time + 1;
+            
+            // The update interval of this rune is controlled here.  For now, update every time.
+            self.runetime = time;
+
+            WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
+            WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
+            WriteEntity (MSG_BROADCAST, self.owner);
+            WriteCoord (MSG_BROADCAST, self.origin_x);
+            WriteCoord (MSG_BROADCAST, self.origin_y);
+            WriteCoord (MSG_BROADCAST, self.origin_z);
+            WriteCoord (MSG_BROADCAST, self.runevector_x);
+            WriteCoord (MSG_BROADCAST, self.runevector_y);
+            WriteCoord (MSG_BROADCAST, self.runevector_z);
+
+            //bprint ("Holding ");
+            //bprint (self.runent.classname);
+            //bprint ("\n");
+        }
+    }
+};
+
 void () Rune_Ghost_Button =
 {
     local entity grabee;
+    local entity controller;
     local vector org;
 
-    //	bprint ("Button Hit!\n");
+    //bprint ("Button Hit!\n");
 
-    if (self.runevar == 0)
+    // Runent is points to the world if nothing is grabbed.  Otherwise it points to the Egon controller entity.
+    // 
+    if (self.runent == world)
     {
-
-        //		bprint ("Searching...\n");
-
-        self.runevar = 1;
+        //bprint ("Searching...\n");
         makevectors (self.v_angle);
         org = self.origin + '0 0 16';
         traceline (org, org + v_forward * 1500.0, FALSE, self);
         grabee = trace_ent;
 
-
         if (grabee.solid != SOLID_BSP && grabee != world)
         {
-            self.runent = grabee;
-            self.runevector = grabee.origin;
-            self.runetime = time;
-            self.runevar = vlen (trace_endpos - org) + 18.0;
+            controller = spawn ();
+            controller.movetype = MOVETYPE_FLY;
+            controller.solid = SOLID_NOT;
+            controller.owner = self;
+            controller.think = Rune_Ghost_Think;
+            controller.nextthink = time;
+
+            setorigin   (controller, self.origin);
+            setsize     (controller, '0 0 0', '0 0 0');
+            setmodel    (controller, "");
+
+            controller.runent = grabee;
+            controller.runevector = grabee.origin;
+            controller.runetime = time;
+            controller.runevar = vlen (trace_endpos - org) + 18.0;
+
             grabee.effects = grabee.effects | EF_BRIGHTFIELD;
             grabee.egongrabber = self;
 
-            //			bprint ("Grabbing ");
-            //			bprint (self.runent.classname);
-            //			bprint ("\n");
+            self.runent = controller;
 
-
+            //bprint ("Grabbing ");
+            //bprint (grabee.classname);
+            //bprint ("\n");
         }
-
 
         WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
         WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
@@ -802,85 +869,15 @@ void () Rune_Ghost_Button =
     else
     {
 
-        //		bprint ("Releasing ");
-        //		bprint (self.runent.classname);
-        //		bprint ("\n");
+        //bprint ("Releasing ");
+        //bprint (self.runent.classname);
+        //bprint ("\n");
 
-        if (self.runent != world)
-        {
-            self.runent.effects = self.runent.effects - EF_BRIGHTFIELD;
-            self.runent = world;
-        }
-
-        self.runevar = 0;
-        self.runetime = time;
-        self.runevector = '0 0 0';
-        self.cnt = 0;
-
+        self.runent = world;
     }
 
     //	bprint ("Finished.\n");
 
-};
-
-void (entity tog) Rune_Ghost_Toggle =
-{
-    local entity temp;
-
-    temp = self;
-    self = tog;
-    Rune_Ghost_Button ();
-    self = temp;
-
-    return;
-};
-
-
-void () Rune_Ghost_Hold =
-{
-    if (self.runevar != 0 && self.runent != world &&
-    self.runetime <= time )
-    {
-        local vector org;
-        local vector place;
-        local float temp1, scalelen;
-
-        self.runent.flags = self.runent.flags -
-        (self.runent.flags & FL_ONGROUND);
-
-        org = self.origin + '0 0 16';
-        makevectors (self.v_angle);
-        place = org + v_forward * self.runevar;
-
-        self.runent.velocity = (place - self.runevector) * 5.0;
-        self.runevector = self.runent.origin;
-
-        self.runent.attack_finished = time + 1;
-        self.runetime = time + 0.1;
-
-        WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
-        WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
-        WriteEntity (MSG_BROADCAST, self);
-        WriteCoord (MSG_BROADCAST, org_x);
-        WriteCoord (MSG_BROADCAST, org_y);
-        WriteCoord (MSG_BROADCAST, org_z);
-        WriteCoord (MSG_BROADCAST, self.runevector_x);
-        WriteCoord (MSG_BROADCAST, self.runevector_y);
-        WriteCoord (MSG_BROADCAST, self.runevector_z);
-
-        //		bprint ("Holding ");
-        //		bprint (self.runent.classname);
-        //		bprint ("\n");
-
-    }
-    else if (self.runevar != 0 && self.runent == world)
-    {
-        Rune_Ghost_Button ();
-    }
-    else if (self.runent.health <= 0 && self.runent != world)
-    {
-        Rune_Ghost_Button ();
-    }
 };
 
 void() HauntHead_Think =
@@ -928,13 +925,12 @@ void () Rune_Head_Button =
 {
     if (self.runevar == 0)
     {
-
         self.runetime = self.modelindex;
         setmodel (self, "");
         self.modelindex = modelindex_none;
         setsize (self, '-10 -10 -10', '10 10 10');
         self.runevar = 1;
-        self.miscflag = self.weapon;
+        self.head_saved_weapon = self.weapon;
         self.weapon = 0;
         self.movetype = MOVETYPE_FLY;
         self.weaponmodel = "";
@@ -947,8 +943,8 @@ void () Rune_Head_Button =
         self.modelindex = self.runetime;
         setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
         self.runevar = 0;
-        self.weapon = self.miscflag;
-        self.miscflag = 0;
+        self.weapon = self.head_saved_weapon;
+        self.head_saved_weapon = 0;
         self.movetype = MOVETYPE_WALK;
 
         centerprint (self, "You are normal again.\n");

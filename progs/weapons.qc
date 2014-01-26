@@ -1017,7 +1017,8 @@ void() W_Attack =
     {
         return;
     }
-    else if (self.runetype == RN_GHOST && self.runevar != 0)
+    // RSERV
+    else if (self.runetype == RN_GHOST && self.runent != world)
     {
         return;
     }

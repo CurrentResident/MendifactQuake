@@ -164,7 +164,7 @@ void() Rune_Switch =
 
     switch = trace_ent;
 
-makevectors (self.angles);
+    makevectors (self.angles);
 
     if (switch.health > 0 && switch.solid != SOLID_BSP)
     {

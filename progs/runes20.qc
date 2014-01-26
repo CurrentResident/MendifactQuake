@@ -334,7 +334,9 @@ void() Orb_Spawn =
         axis.avelocity_y = 55;
     }
     else
-    { axis.avelocity_y = -55; }
+    {
+        axis.avelocity_y = -55;
+    }
 
     orb = spawn();
     orb.movetype = MOVETYPE_FLY;

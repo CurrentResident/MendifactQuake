@@ -95,10 +95,6 @@ void() Rune_Think =
         {
             Wall_Check();
         }
-        else if (self.runetype == RN_GHOST)
-        {
-            Rune_Ghost_Hold ();
-        }
         else if (self.runetype == RN_HEAD)
         {
             Rune_Head_Float ();
@@ -355,11 +351,12 @@ void() Rune_Activate =
 {
     stuffcmd (self, "v_cshift 0 0 0 1\n");
     self.max_health = 100;
-    self.runevar = 0;
-    self.runetime = time;
+    self.runevar    = 0;
+    self.runent     = world;
+    self.runetime   = time;
     self.runevector = '0 0 0';
-    self.movetype = MOVETYPE_WALK;
-    self.touch = SUB_Null;
+    self.movetype   = MOVETYPE_WALK;
+    self.touch      = SUB_Null;
 
     // Clear out any possible bad clipping state from Haunted Head.
     setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
@@ -436,10 +433,6 @@ void() Rune_Activate =
     else if (self.runetype == RN_IMPACT)
     {
         self.touch = Impact_Touch;
-    }
-    else if (self.runetype == RN_GHOST)
-    {
-        self.runevar = 0;
     }
     else if (self.runetype == RN_HEAD)
     {
