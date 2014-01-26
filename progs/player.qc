@@ -727,8 +727,9 @@ void() PlayerDie =
         player_died1();
     }
     else
-    { player_diee1(); }
-
+    {
+        player_diee1();
+    }
 };
 
 void() set_suicide_frame =
@@ -744,6 +745,11 @@ void() set_suicide_frame =
     self.movetype = MOVETYPE_TOSS;
     self.deadflag = DEAD_DEAD;
     self.nextthink = -1;
+
+    // RSERV:   Ensure any active runes think we're done with them.
+    //          Attempt to make other runes think we're dead...
+    self.runetype = 0;
+    self.health = -1;
 };
 
 

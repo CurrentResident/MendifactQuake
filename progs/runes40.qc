@@ -757,11 +757,18 @@ void () Rune_Ghost_Think =
 {
     // Release conditions:
     //  * Owner has disowned us / hit the button.
+    //  * Owner somehow lost the rune  (suicide or disconnect???)
     //  * Owner has died.
     //  * Grabee has died.
+    //  * Grabee's egongrabber points back to world 
+    //      (indicates sudden respawn, still allows multi grabbers.
+    //          Make big assumption that egongrabber ONLY gets reset during respawn.
+    //          We can try to fix this by chaining the Egon controllers when grabbing the same entity.)
     if (self.owner.runent != self ||
+        self.owner.runetype != RN_GHOST ||
         self.owner.health < 1 ||
-        self.runent.health < 1)
+        self.runent.health < 1 ||
+        self.runent.egongrabber == world)
     {
         if (self.owner.runent == self)
         {
