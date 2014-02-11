@@ -354,9 +354,6 @@ void() Orb_Spawn =
     orb.runent = axis;
 };
 
-//a predef
-entity() SelectRuneSpawnPoint;
-
 void() Rune_Blink =
 {
     local vector newspot;

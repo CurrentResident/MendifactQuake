@@ -696,32 +696,125 @@ void (entity guy) ServerMsg =
     sprint (guy, "\n\n\n\n");
 };
 
-entity() SelectRuneSpawnPoint =
+vector (vector nudgevector, vector center, vector testpoint) TestRuneCorner =
+{
+    local float testpointcontents;
+    local vector newnudge;
+
+    newnudge = nudgevector;
+
+    testpointcontents = pointcontents (testpoint);
+    if (testpointcontents == CONTENT_SOLID ||
+        testpointcontents == CONTENT_LAVA)
+    {
+        // Move the nudge away from the collision.
+        newnudge = newnudge + (center - testpoint);
+    }
+
+    return newnudge;
+};
+
+vector () SelectRuneSpawnPoint =
 {
     local float runec, iters;
 
-    //runec is to keep them from clustering
-    runec = 0;
-    iters = random() * 100 + 10;
+    local vector center;
+    local vector spawnpoint;
+    local vector testpoint0;
+    local vector testpoint1;
+    local vector testpoint2;
+    local vector testpoint3;
+    local vector testpoint4;
+    local vector testpoint5;
+    local vector testpoint6;
+    local vector testpoint7;
+    local vector nudgevector;
 
-    while (runec < iters)
+    local float nudges;
+    local float rolling = 1;
+    local string nudgestring;
+
+    while (rolling)
     {
-        runespawn = nextent (runespawn);
-        runec = runec + 1;
+        //runec is to keep them from clustering
+        runec = 0;
+        iters = random() * 100 + 10;
+
+        while (runec < iters)
+        {
+            runespawn = nextent (runespawn);
+            runec = runec + 1;
+        }
+
+        runec = 0;
+        //Now runec checks for HUGE HUGE loops to prevent crashing
+
+        while ( (   (runespawn.classname == "player")
+                ||  (runespawn.classname == "rune"))
+                && runec < 1500)
+        {                                               //  TLB   +----+  TRB
+            runespawn = nextent (runespawn);            //       /|   /|
+            runec = runec + 1;                          //TLF   +----+ |TRF
+        }                                               //      | |  | |
+                                                        //  BLB | +--|-+  BRB
+        spawnpoint = runespawn.origin;                  //      |/   |/
+        //setsize (rune, '-16 -16 0', '16 16 50');      //      +----+
+                                                        //BLF           BRF
+        center = (RN_HULL_MAX - RN_HULL_MIN) * 0.5;
+        nudges = 3;
+        nudgevector = '0 0 0';
+
+        while (nudges > 0 && rolling)
+        {
+//            traceon();
+            spawnpoint = spawnpoint + nudgevector;
+
+            testpoint0 = spawnpoint + RN_HULL_MIN;
+            testpoint1 = testpoint0;
+            testpoint2 = testpoint0;
+            testpoint3 = testpoint0;
+
+            testpoint1_x = spawnpoint_x + RN_HULL_MAX_x;
+            testpoint2_y = spawnpoint_y + RN_HULL_MAX_y;
+            testpoint3_x = spawnpoint_x + RN_HULL_MIN_x;
+
+            testpoint4 = spawnpoint + RN_HULL_MAX;
+            testpoint5 = testpoint4;
+            testpoint6 = testpoint4;
+            testpoint7 = testpoint4;
+
+            testpoint5_x = spawnpoint_x + RN_HULL_MIN_x;
+            testpoint6_y = spawnpoint_y + RN_HULL_MIN_y;
+            testpoint7_x = spawnpoint_x + RN_HULL_MAX_x;
+
+            nudgevector = TestRuneCorner (nudgevector, spawnpoint, testpoint0);
+            nudgevector = TestRuneCorner (nudgevector, spawnpoint, testpoint1);
+            nudgevector = TestRuneCorner (nudgevector, spawnpoint, testpoint2);
+            nudgevector = TestRuneCorner (nudgevector, spawnpoint, testpoint3);
+            nudgevector = TestRuneCorner (nudgevector, spawnpoint, testpoint4);
+            nudgevector = TestRuneCorner (nudgevector, spawnpoint, testpoint5);
+            nudgevector = TestRuneCorner (nudgevector, spawnpoint, testpoint6);
+            nudgevector = TestRuneCorner (nudgevector, spawnpoint, testpoint7);
+//            traceoff();
+
+            //nudgevector = nudgevector * 0.25;
+
+            //dprint ("nudge: ");
+            //nudgestring = vtos (nudgevector);
+            //dprint (nudgestring);
+            //dprint ("\n");
+            if (nudgevector == '0 0 0')
+            {
+                rolling = 0;
+            }
+            else
+            {
+                nudges = nudges - 1;
+            }
+        }
     }
 
-    runec = 0;
-    //Now runec checks for HUGE HUGE loops to prevent crashing
-
-    while ( (   (runespawn.classname == "player")
-            ||  (runespawn.classname == "rune"))
-            && runec < 1500)
-    {
-        runespawn = nextent (runespawn);
-        runec = runec + 1;
-    }
-
-    return runespawn;
+    return spawnpoint;
 };
 
 float(entity rune) Rune_Must_Move =
@@ -918,7 +1011,7 @@ void (vector sorigin, float xmax, float ymax, float zmax) Rune_Spawn =
 void (float numspawn) Rune_SpawnAll =
 {
     local float counter;
-    local entity temp;
+    local vector temp;
 
     counter = 0;
 
@@ -926,7 +1019,7 @@ void (float numspawn) Rune_SpawnAll =
     {
         temp = SelectRuneSpawnPoint();
 
-        Rune_Spawn (temp.origin, 500, 500, 500);
+        Rune_Spawn (temp, 500, 500, 500);
         counter = counter + 1;
     }
 };
