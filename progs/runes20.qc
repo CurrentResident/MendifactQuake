@@ -163,6 +163,7 @@ void() DSpot_Arm =
     self.nextthink = time;
     self.think = DSpot_Think;
     self.touch = DSpot_Touch;
+    self.effects = self.effects - (self.effects & EF_DIMLIGHT);
     setmodel (self, "");
     sound (self, CHAN_VOICE, "items/inv1.wav", 1, ATTN_NORM);
 };
