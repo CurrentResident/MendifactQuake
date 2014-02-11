@@ -877,7 +877,7 @@ void (vector sorigin, float xmax, float ymax, float zmax) Rune_Spawn =
     rune = spawn();
     setorigin (rune, sorigin);
 
-    setsize (rune, '-16 -16 0', '16 16 50');
+    setsize (rune, RN_HULL_MIN, RN_HULL_MAX);
     rune.movetype = MOVETYPE_BOUNCE;
     rune.solid = SOLID_TRIGGER;
     rune.flags = FL_ITEM;
@@ -888,10 +888,7 @@ void (vector sorigin, float xmax, float ymax, float zmax) Rune_Spawn =
 
     rnd = random() * 4;
 
-    if (rnd > 0)
-    {
-        setmodel (rune, "progs/end1.mdl");
-    }
+    setmodel (rune, "progs/end1.mdl");
 
     if (rnd > 1)
     {
