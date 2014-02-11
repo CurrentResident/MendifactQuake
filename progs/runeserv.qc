@@ -447,6 +447,8 @@ string() RandMap =
     local float rand;
     local string newmap;
 
+    newmap = "";
+
     rand = ceil (random() * 36.0);
     //   rand = rand + ceil (random () * 21.0);
     //  rand = rand + ceil (random () * 53.0);
@@ -745,7 +747,7 @@ void() Rune_Recycle =
 
 void() Rune_Clip_Check =
 {
-    local string tempstring;
+    //DEBUG local string tempstring;
     local float     remove_reason;
 
     // Debug info:
@@ -811,8 +813,6 @@ void() Rune_Clip_Check =
 void() Rune_Touch =
 {
     local entity temp;
-    local string temtex1;
-    local float rand;
 
     if (Rune_Must_Move (self))
     {
@@ -868,7 +868,7 @@ void() Rune_Touch =
 void (vector sorigin, float xmax, float ymax, float zmax) Rune_Spawn =
 {
     local entity rune;
-    local float rnd, counter;
+    local float rnd;
     local float type;
 
     type = random() * TOTAL_RUNETYPE;

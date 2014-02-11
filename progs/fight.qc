@@ -142,7 +142,9 @@ float() CheckAttack =
         }
     }
     else
-    { chance = 0; }
+    {
+        chance = 0;
+    }
 
     if (random () < chance)
     {
@@ -319,7 +321,9 @@ float() SoldierCheckAttack =
         chance = 0.05;
     }
     else
-    { chance = 0; }
+    {
+        chance = 0;
+    }
 
     if (random () < chance)
     {
@@ -350,8 +354,6 @@ float() ShamCheckAttack =
 {
     local vector	spot1, spot2;
     local entity	targ;
-    local float		chance;
-    local float		enemy_yaw;
 
     if (enemy_range == RANGE_MELEE)
     {
@@ -479,7 +481,9 @@ float() OgreCheckAttack =
         chance = 0.05;
     }
     else
-    { chance = 0; }
+    {
+        chance = 0;
+    }
 
     self.attack_state = AS_MISSILE;
     SUB_AttackFinished (1 + 2 * random());

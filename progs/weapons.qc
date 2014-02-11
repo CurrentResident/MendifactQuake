@@ -98,7 +98,7 @@ SpawnMeatSpray
 */
 void (vector org, vector vel) SpawnMeatSpray =
 {
-    local	entity missile, mpuff;
+    local	entity missile;
     local	vector	org;
 
     missile = spawn ();
@@ -405,7 +405,7 @@ W_FireRocket
 */
 void() W_FireRocket =
 {
-    local	entity missile, mpuff;
+    local	entity missile;
 
     self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 
@@ -612,7 +612,7 @@ W_FireGrenade
 */
 void() W_FireGrenade =
 {
-    local	entity missile, mpuff;
+    local	entity missile;
 
     self.currentammo = self.ammo_rockets = self.ammo_rockets - 1;
 
@@ -704,7 +704,6 @@ void (vector org, vector dir) launch_spike =
 void() W_FireSuperSpikes =
 {
     local vector	dir;
-    local entity	old;
 
     //RUNE SERV: cloak rune. No sound
     if (self.runetype != RN_CLOAK)
@@ -726,7 +725,6 @@ void() W_FireSuperSpikes =
 void (float ox) W_FireSpikes =
 {
     local vector	dir;
-    local entity	old;
 
     makevectors (self.v_angle);
 
@@ -762,8 +760,6 @@ void (float ox) W_FireSpikes =
 .float hit_z;
 void() spike_touch =
 {
-    local float rand;
-
     if (other == self.owner)
     {
         return;
@@ -811,8 +807,6 @@ void() spike_touch =
 
 void() superspike_touch =
 {
-    local float rand;
-
     if (other == self.owner)
     {
         return;
@@ -1205,6 +1199,8 @@ void() W_ChangeWeapon =
 
     it = self.items;
     am = 0;
+
+    fl = 0;
 
     if (self.impulse == 1)
     {

@@ -522,12 +522,15 @@ void() Suck_Touch =
         return;
     }
 
-    if (other = self.owner)
-    {
-        return;
-    }
+    // There used to be an interesting bug here that prevented anything from getting damaged by the gravity
+    // well.  For the sake of keeping things consistent, that's commented out here, and no damage can be done,
+    // but it really should be fixed.  FIXME.
+    //if (other = self.owner)
+    //{
+    //    return;
+    //}
 
-    T_Damage (other, self, self.owner, 1);
+    //T_Damage (other, self, self.owner, 1);
 };
 
 void() Suck_Spawn =
@@ -582,8 +585,6 @@ void() Impact_Touch =
     //  if (self.runetime > time) return;
 
     self.runetime = time + 0.5;
-
-    local entity head, selected;
 
     other.flags = other.flags - (other.flags & FL_ONGROUND);
     other.velocity = other.velocity + '0 0 200' + self.velocity * 3;
@@ -652,15 +653,14 @@ void (vector org) spawn_ntfog =
 
 void() Rune_Twalk =
 {
-    local vector org, place, theangles, thevelocity;
-    local float thehealth, shells, nails, rockets, cells, theitems;
+    local vector org, place;
 
     local entity switch;
 
-local vector f, p1, p2;
+    local vector f, p1, p2;
 
-org = self.origin + '0 0 15';
-makevectors (self.v_angle);
+    org = self.origin + '0 0 15';
+    makevectors (self.v_angle);
 
     p1 = org;
     p2 = org + v_forward * 1500;
@@ -675,7 +675,7 @@ makevectors (self.v_angle);
 
     switch = trace_ent;
 
-particle (trace_endpos, '0 0 0', 8, 100);
+    particle (trace_endpos, '0 0 0', 8, 100);
 
     makevectors (self.angles);
 
@@ -825,7 +825,7 @@ void() Rune_Repel =
     {
         if (pushee.health || ! (pushee.flags & FL_ONGROUND))
         {
-            if (pushee.solid != SOLID_BSP && !self == pushee)
+            if (pushee.solid != SOLID_BSP && self != pushee)
             {
                 if (pushee.classname != "player")
                 {

@@ -135,11 +135,9 @@ void() Rune_Fly =
         }
     }
 
-    local float cont;
-
     self.flags = self.flags | FL_ONGROUND;
 
-    local float invcos, nv, nvp, nvpmax, nvs, nsp, sp, svz;
+    local float invcos, nvp, nvpmax, sp, svz;
     local vector f, vp, vs;
 
     svz = self.velocity_z * 0.75;
@@ -227,7 +225,6 @@ void() GFire_Spawn =
     }
 
     local entity fire;
-    local float n;
 
     fire = spawn();
 

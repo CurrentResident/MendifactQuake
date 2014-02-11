@@ -162,7 +162,6 @@ void() item_health =
 
 void() health_touch =
 {
-    local	float amount;
     local	string	s;
 
     if (other.classname != "player")
@@ -265,6 +264,10 @@ void() armor_touch;
 void() armor_touch =
 {
     local	float	type, value, bit;
+
+    type = 0;
+    bit = 0;
+    value = 0;
 
     if (other.health <= 0)
     {
@@ -473,6 +476,8 @@ void() weapon_touch =
         return;
     }
 
+    new = 0;
+
     // if the player was using his best weapon, change up to the new one if better
     stemp = self;
     self = other;
@@ -553,7 +558,9 @@ void() weapon_touch =
         other.ammo_cells = other.ammo_cells + 15;
     }
     else
-    { objerror ("weapon_touch: unknown classname"); }
+    {
+        objerror ("weapon_touch: unknown classname");
+    }
 
     sprint (other, "You got the ");
     sprint (other, self.netname);
@@ -996,9 +1003,6 @@ KEYS
 
 void() key_touch =
 {
-    local entity	stemp;
-    local float		best;
-
     if (other.classname != "player")
     {
         return;
@@ -1146,9 +1150,6 @@ END OF LEVEL RUNES
 
 void() sigil_touch =
 {
-    local entity	stemp;
-    local float		best;
-
     if (other.classname != "player")
     {
         return;
@@ -1229,9 +1230,6 @@ void() powerup_touch;
 
 void() powerup_touch =
 {
-    local entity	stemp;
-    local float		best;
-
     if (other.classname != "player")
     {
         return;

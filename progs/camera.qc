@@ -166,6 +166,8 @@ void() Keep_cam_chasing_owner =
     //  (back ~= 640, forward ~= 0)
     // f_r
     //  (left ~= 640, right ~= 0)
+
+    dir = '0 0 0';
     dir_y = self.owner.v_angle_y;
     makevectors ( dir );
     f_f = vlen ( (v_forward * 320) - self.owner.velocity );
@@ -482,8 +484,6 @@ void ( entity targ_owner ) LaserTargeterToggle =
 
 void() Chase_cam_lvlstart_think =
 {
-
-    local string s;
 
     if ( (self.owner.speed & CHSCAM_ON) )
     {

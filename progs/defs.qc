@@ -587,8 +587,6 @@ float	AS_MISSILE		= 4;
 .string		mdl;
 .vector		mangle;			// angle at start
 
-.vector		oldorigin;		// only used by secret door
-
 .float		t_length, t_width;
 
 
@@ -774,6 +772,7 @@ void (vector destangle, float tspeed, void() func) SUB_CalcAngleMove;
 void()  SUB_CalcMoveDone;
 void() SUB_CalcAngleMoveDone;
 void() SUB_Null;
+void(entity attacker, float damage)	SUB_NullPain;
 void() SUB_UseTargets;
 void() SUB_Remove;
 

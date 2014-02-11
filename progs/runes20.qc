@@ -358,7 +358,6 @@ entity() SelectRuneSpawnPoint;
 
 void() Rune_Blink =
 {
-    local entity newent;
     local vector newspot;
     local float loccount;
 

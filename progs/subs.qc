@@ -1,6 +1,7 @@
 
 
 void() SUB_Null = {};
+void(entity attacker, float damage)	SUB_NullPain = {};
 
 void() SUB_Remove = {remove (self);};
 
@@ -9,7 +10,7 @@ void() SUB_Remove = {remove (self);};
 QuakeEd only writes a single float for angles (bad idea), so up and down are
 just constant angles.
 */
-vector() SetMovedir =
+void() SetMovedir =
 {
     if (self.angles == '0 -1 0')
     {
