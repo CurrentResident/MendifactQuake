@@ -576,8 +576,9 @@ void() Spawn_Weird =
     temp.movetype = MOVETYPE_FLY;
     temp.solid = SOLID_TRIGGER;
     temp.owner = self;
-    setorigin (temp, self.origin + '0 0 15');
-    setmodel (temp, "progs/s_bubble.spr");
+    setorigin   (temp, self.origin + '0 0 15');
+    setsize     (temp, '0 0 0', '0 0 0');
+    setmodel    (temp, "progs/s_bubble.spr");
     temp.think = Weird_WanderThink;
     temp.touch = Weird_Touch;
     temp.nextthink = time;
@@ -890,7 +891,7 @@ void () Rune_Ghost_Button =
 void() HauntHead_Think =
 {
     if (self.owner.health < 1 ||
-    ! (self.owner.runetype == RN_HEAD && self.owner.runevar == 1))
+        ! (self.owner.runetype == RN_HEAD && self.owner.runevar == 1))
     {
         remove (self);
         return;
@@ -983,8 +984,10 @@ void (vector bite_dir) Rune_Head_Bite =
         T_Damage (trace_ent, self, self, 50);
     }
     else
+    {
         //centerprint (self, "bite!\n");
         //gnashing sound
-    { sound (self, CHAN_WEAPON, "knight/idle.wav", 1, ATTN_NORM); }
+        sound (self, CHAN_WEAPON, "knight/idle.wav", 1, ATTN_NORM);
+    }
 
 };
