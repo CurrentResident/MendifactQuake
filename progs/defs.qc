@@ -304,6 +304,9 @@ float RN_FIREWALK = 39;
 float RN_GHOST = 36;
 float RN_HEAD = 37;
 
+vector RN_HULL_MIN = '-16 -16 0';
+vector RN_HULL_MAX = '16 16 50';
+
 // message protocol defines
 float SVC_SETVIEWPORT	= 5;
 float SVC_SETVIEWANGLES	= 10;
