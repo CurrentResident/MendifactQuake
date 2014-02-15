@@ -26,7 +26,7 @@ $frame old30 old31 old32 old33 old34 old35 old36 old37 old38 old39
 $frame old40 old41 old42 old43 old44 old45 old46
 
 $frame shake1 shake2 shake3 shake4 shake5 shake6 shake7 shake8
-$frame shake9 shake10 shake11 shake12 shake12 shake13 shake14
+$frame shake9 shake10 shake11 shake12 shake12b shake13 shake14
 $frame shake15 shake16 shake17 shake18 shake19 shake20
 
 //void() old_stand     =[      $old1,       old_stand    ] {};
@@ -91,6 +91,7 @@ void() old_thrash9        = [      $shake9,  old_thrash10      ] {lightstyle (0,
 void() old_thrash10       = [      $shake10, old_thrash11      ] {lightstyle (0, "e");};
 void() old_thrash11       = [      $shake11, old_thrash12      ] {lightstyle (0, "g");};
 void() old_thrash12       = [      $shake12, old_thrash13      ] {lightstyle (0, "i");};
+void() old_thrash12b      = [      $shake12b,old_thrash13      ] {lightstyle (0, "i");};
 void() old_thrash13       = [      $shake13, old_thrash14      ] {lightstyle (0, "k");};
 void() old_thrash14       = [      $shake14, old_thrash15      ] {lightstyle (0, "m");};
 void() old_thrash15       = [      $shake15, old_thrash16      ] {lightstyle (0, "m");

@@ -1211,14 +1211,18 @@ void() PlayerPreThink =
         PlayerJump ();
     }
     else
-    { self.flags = self.flags | FL_JUMPRELEASED; }
+    {
+        self.flags = self.flags | FL_JUMPRELEASED;
+    }
 
     //RUNE SERV: Message when you log onto the server
     if (self.motd_time)
+    {
         if (self.motd_time < time)
         {
             MOTD();
         }
+    }
 
     //RUNE SERV: Runes that need thinking
     if (self.runetype > 0)
@@ -1228,11 +1232,13 @@ void() PlayerPreThink =
 
     //RUNE SERV: Adding some more runes till too much.
     if (runespawntime < time)
+    {
         if (runecurrent < runemax)
         {
             Rune_SpawnAll (1);
             runespawntime = time + 1 + random() * 15;
         }
+    }
 
     // teleporters can force a non-moving pause time
     if (time < self.pausetime)
@@ -1639,7 +1645,7 @@ void (entity targ, entity attacker) ClientObituary =
         {
             if (attacker.classname == "shambler_slave")
             {
-                targ.deathtype == "";
+                targ.deathtype = "";
 
                 if (attacker.owner.health > 0)
                 {
@@ -1669,7 +1675,7 @@ void (entity targ, entity attacker) ClientObituary =
                 {
                     if (targ.deathtype == "divinewind")
                     {
-                        targ.deathtype == "";
+                        targ.deathtype = "";
                         bprint (targ.netname);
                         bprint (" detonated in a blaze of glory\n");
                         return;
@@ -1677,7 +1683,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                     if (targ.deathtype == "waterzap")
                     {
-                        targ.deathtype == "";
+                        targ.deathtype = "";
                         bprint (targ.netname);
                         bprint (" jumped into the water, while ELECTRIFIED!\n");
                         attacker.frags = attacker.frags - 1;
@@ -1686,7 +1692,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                     if (attacker.runetype == RN_BOMB && attacker.deathtype != "divinewind")
                     {
-                        targ.deathtype == "";
+                        targ.deathtype = "";
                         bprint (targ.netname);
                         bprint (" blew up after killing himself.\n");
                         attacker.frags = attacker.frags - 1;
@@ -1698,7 +1704,7 @@ void (entity targ, entity attacker) ClientObituary =
                 {
                     if (attacker.runetype == RN_BOMB && attacker.deathtype == "divinewind")
                     {
-                        targ.deathtype == "";
+                        targ.deathtype = "";
                         bprint (targ.netname);
                         bprint (" was taken out in ");
                         bprint (attacker.netname);
@@ -1709,7 +1715,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                     if (attacker.runetype == RN_BOMB && attacker.deathtype != "divinewind" && attacker.health < 1)
                     {
-                        targ.deathtype == "";
+                        targ.deathtype = "";
                         bprint (targ.netname);
                         bprint (" shouldn't have shot at ");
                         bprint (attacker.netname);
@@ -1720,7 +1726,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                     if (targ.deathtype == "zapped")
                     {
-                        targ.deathtype == "";
+                        targ.deathtype = "";
                         bprint (targ.netname);
                         bprint (" was zapped within ");
                         bprint (attacker.netname);
@@ -1731,7 +1737,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                     if (targ.deathtype == "waterzap")
                     {
-                        targ.deathtype == "";
+                        targ.deathtype = "";
                         bprint (targ.netname);
                         bprint (" was zapped when ");
                         bprint (attacker.netname);
@@ -1742,7 +1748,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                     if (targ.deathtype == "vengance")
                     {
-                        targ.deathtype == "";
+                        targ.deathtype = "";
                         bprint (targ.netname);
                         bprint (" got a taste of his own medicine from ");
                         bprint (attacker.netname);
@@ -1773,7 +1779,7 @@ void (entity targ, entity attacker) ClientObituary =
                 //RUNE SERV start--------------
                 if (targ.deathtype == "dspot")
                 {
-                    targ.deathtype == "";
+                    targ.deathtype = "";
                     bprint (targ.netname);
                     bprint (" gibbed in his own Death Spot!\n");
                     return;
@@ -1781,7 +1787,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                 if (targ.deathtype == "radioactive")
                 {
-                    targ.deathtype == "";
+                    targ.deathtype = "";
                     bprint (targ.netname);
                     bprint (" died of his own radioactivity\n");
                     return;
@@ -1839,7 +1845,7 @@ void (entity targ, entity attacker) ClientObituary =
                 //RUNE SERV start--------------
                 if (targ.deathtype == "dspot")
                 {
-                    targ.deathtype == "";
+                    targ.deathtype = "";
                     bprint (targ.netname);
                     bprint (" gibbed in ");
                     bprint (attacker.netname);
@@ -1849,7 +1855,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                 if (targ.deathtype == "radioactive")
                 {
-                    targ.deathtype == "";
+                    targ.deathtype = "";
                     bprint (targ.netname);
                     bprint (" died of ");
                     bprint (attacker.netname);
@@ -1859,7 +1865,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                 if (targ.deathtype == "gfire")
                 {
-                    targ.deathtype == "";
+                    targ.deathtype = "";
                     bprint (targ.netname);
                     bprint ("'s legs burned off by ");
                     bprint (attacker.netname);
@@ -1870,7 +1876,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                 if (targ.deathtype == "deathorb")
                 {
-                    targ.deathtype == "";
+                    targ.deathtype = "";
                     bprint (targ.netname);
                     bprint (" got attacked by ");
                     bprint (attacker.netname);
@@ -1881,7 +1887,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                 if (targ.deathtype == "spikeball")
                 {
-                    targ.deathtype == "";
+                    targ.deathtype = "";
                     bprint (targ.netname);
                     bprint (" ate chaff from ");
                     bprint (attacker.netname);
@@ -1902,7 +1908,7 @@ void (entity targ, entity attacker) ClientObituary =
 
                 if (targ.deathtype == "sucker")
                 {
-                    targ.deathtype == "";
+                    targ.deathtype = "";
                     bprint (targ.netname);
                     bprint (" was crushed in ");
                     bprint (attacker.netname);

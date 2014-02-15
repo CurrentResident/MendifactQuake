@@ -29,7 +29,7 @@ $frame painb10 painb11
 //frame attack1 attack2 attack3 attack4 attack5 attack6 attack7
 //frame attack8 attack9 attack10 attack11
 
-$frame attackb1 attackb1 attackb2 attackb3 attackb4 attackb5
+$frame attackb0 attackb1 attackb2 attackb3 attackb4 attackb5
 $frame attackb6 attackb7 attackb8 attackb9 attackb10
 
 $frame walk1 walk2 walk3 walk4 walk5 walk6 walk7 walk8 walk9
@@ -118,6 +118,11 @@ void()	knight_runatk9	= [	$runattack9,	knight_runatk10	] {ai_melee_side();};
 void()	knight_runatk10	= [	$runattack10,	knight_runatk11	] {ai_charge_side();};
 void()	knight_runatk11	= [	$runattack11,	knight_run1	] {ai_charge (10);};
 
+void()	knight_atk0	= [	$attackb0,		knight_atk2	]
+{
+    sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
+    ai_charge (0);
+};
 void()	knight_atk1	= [	$attackb1,		knight_atk2	]
 {
     sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
