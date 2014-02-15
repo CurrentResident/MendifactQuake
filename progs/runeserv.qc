@@ -700,7 +700,25 @@ entity() SelectRuneSpawnPoint =
 {
     local float runec, iters;
 
-    //runec is to keep them from clustering
+    // For a long time, Artifact Quake just left runespawn at whatever it found last time, and let nextent deal
+    // with the pain of finding the next real ent.  Then Darkplaces decided to drop the ent count during physics
+    // processing for removed temp ents.  This creates a window where runespawn can be left beyond the last real
+    // ent, which nextent() can't deal with.
+    //
+    // Now we try to be a little more clever.
+
+    // If there are runes, randomly pick one (or the world) as the starting point for the entity search
+    // Otherwise, start with world.
+    runespawn = world;
+
+    runec = random() * runecurrent;
+    while (runec > 0)
+    {
+        runespawn = find (runespawn, classname, "rune");
+        runec = runec - 1;
+    }
+
+    // All this randomness is an attempt to fight clustering...
     runec = 0;
     iters = random() * 100 + 10;
 
@@ -713,8 +731,10 @@ entity() SelectRuneSpawnPoint =
     runec = 0;
     //Now runec checks for HUGE HUGE loops to prevent crashing
 
-    while ( (   (runespawn.classname == "player")
-            ||  (runespawn.classname == "rune"))
+    while ((   (runespawn.classname == "player")
+            || (runespawn.classname == "rune")
+            || (runespawn           == world)
+           )
             && runec < 1500)
     {
         runespawn = nextent (runespawn);
