@@ -651,25 +651,85 @@ void (vector org) spawn_ntfog =
     WriteCoord (MSG_BROADCAST, org_z);
 };
 
+float(vector org, vector hull_mins, vector hull_maxes) TestBox =
+{
+    local float  testpointcontents;
+    local vector testpoint0;
+    local vector testpoint1;
+    local vector testpoint2;
+    local vector testpoint3;
+    local vector testpoint4;
+    local vector testpoint5;
+    local vector testpoint6;
+    local vector testpoint7;
+
+    testpoint0 = org        + hull_mins;
+    testpoint1 = testpoint0;
+    testpoint2 = testpoint0;
+    testpoint3 = testpoint0;
+
+    testpoint1_x = org_x + hull_maxes_x;
+    testpoint2_y = org_y + hull_maxes_y;
+    testpoint3_x = org_x + hull_mins_x;
+
+    testpoint4 = org        + hull_maxes;
+    testpoint5 = testpoint4;
+    testpoint6 = testpoint4;
+    testpoint7 = testpoint4;
+
+    testpoint5_x = org_x + hull_mins_x;
+    testpoint6_y = org_y + hull_mins_y;
+    testpoint7_x = org_x + hull_maxes_x;
+
+    testpointcontents = pointcontents (testpoint0);
+    if (testpointcontents != CONTENT_SOLID)
+    {
+        testpointcontents = pointcontents (testpoint1);
+        if (testpointcontents != CONTENT_SOLID)
+        {
+            testpointcontents = pointcontents (testpoint2);
+            if (testpointcontents != CONTENT_SOLID)
+            {
+                testpointcontents = pointcontents (testpoint3);
+                if (testpointcontents != CONTENT_SOLID)
+                {
+                    testpointcontents = pointcontents (testpoint4);
+                    if (testpointcontents != CONTENT_SOLID)
+                    {
+                        testpointcontents = pointcontents (testpoint5);
+                        if (testpointcontents != CONTENT_SOLID)
+                        {
+                            testpointcontents = pointcontents (testpoint6);
+                            if (testpointcontents != CONTENT_SOLID)
+                            {
+                                testpointcontents = pointcontents (testpoint7);
+                                if (testpointcontents != CONTENT_SOLID)
+                                {
+                                    return 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return 0;
+};
+
 void() Rune_Twalk =
 {
     local vector org, place;
 
     local entity switch;
 
-    local vector f, p1, p2;
+    local vector p1, p2;
 
     org = self.origin + '0 0 15';
     makevectors (self.v_angle);
 
     p1 = org;
     p2 = org + v_forward * 1500;
-    f = p2 - p1;
-    normalize (f);
-    f_x = 0 - f_y;
-    f_y = f_x;
-    f_z = 0;
-    f = f * 16;
 
     traceline (p1, p2, FALSE, self);
 
@@ -677,15 +737,43 @@ void() Rune_Twalk =
 
     particle (trace_endpos, '0 0 0', 8, 100);
 
-    makevectors (self.angles);
-
     if (switch == world)
+    {
+        local vector    destination;
+        local float     destinationtest;
+        local float     testcount;
+
+        // Probe for a place safe to teleport to.  Where did the trace end?  Step back about 50 units from there
+        // and see if any bounding box corners land inside something solid.  If so, step back another 10 units
+        // and check again.  Do this 10 times and if we find an okay spot, teleport there.  Otherwise, drop it.
+        //
+        // Why?  Because darkplaces otherwise sometimes lets us teleport with the bounding box partially into
+        // something solid, which results in subsequent teleport shuffles landing WAY outside the map, exiling
+        // the player to the outer darkness.  Original Quake just gave up instead.  This algorithm helps avoid
+        // the realm of the old gods.
+        //
+        destination = trace_endpos - v_forward * 50;
+
+        testcount       = 10;
+        destinationtest = 0;
+
+        while (testcount > 0 && destinationtest == 0)
         {
-                spawn_ntfog (self.origin);
-                setorigin (self, trace_endpos - v_forward * 60);
-                droptofloor();
-                return;
+            destination = destination - v_forward * 10;
+
+            destinationtest = TestBox (destination, RN_HULL_MIN, RN_HULL_MAX);
+
+            testcount = testcount - 1;
         }
+
+        if (destinationtest > 0)
+        {
+            spawn_ntfog (self.origin);
+            setorigin (self, destination);
+            droptofloor();
+        }
+        return;
+    }
 
     if (switch.flags & FL_ITEM)
     {
