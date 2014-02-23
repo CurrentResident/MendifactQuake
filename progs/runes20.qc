@@ -354,10 +354,13 @@ void() Orb_Spawn =
     orb.runent = axis;
 };
 
+float(vector center, vector hull_mins, vector hull_maxes) TestBox;
+
 void() Rune_Blink =
 {
     local vector newspot;
     local float loccount;
+    local float foundspot;
 
     if (self.runetime > time)
     {
@@ -366,23 +369,33 @@ void() Rune_Blink =
 
     self.runetime = time + 0.1;
 
-    loccount = 0;
+    loccount    = 0;
+    foundspot   = 0;
 
-    newspot_x = self.origin_x + crandom() * 3000;
-    newspot_y = self.origin_y + crandom() * 3000;
-    newspot_z = self.origin_z + crandom() * 3000;
-
-    while (pointcontents (newspot) != CONTENT_EMPTY && loccount < 1000)
+    do
     {
         newspot_x = self.origin_x + crandom() * 3000;
         newspot_y = self.origin_y + crandom() * 3000;
         newspot_z = self.origin_z + crandom() * 3000;
-        loccount = loccount + 1;
-    }
 
-    setorigin (self, newspot);
+        loccount = loccount + 1;
+
+        if (pointcontents (newspot) == CONTENT_EMPTY)
+        {
+            if (TestBox (newspot, VEC_HULL_MIN, VEC_HULL_MAX) == 1)
+            {
+                foundspot = 1;
+            }
+        }
+    }
+    while (foundspot == 0 && loccount < 1000);
+
+    if (foundspot == 1)
+    {
+        setorigin (self, newspot);
+        self.velocity = '0 0 0';
+    }
     self.effects = self.effects | EF_MUZZLEFLASH;
-    self.velocity = '0 0 0';
 };
 
 void() Dot_Think =
