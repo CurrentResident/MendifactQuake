@@ -651,7 +651,7 @@ void (vector org) spawn_ntfog =
     WriteCoord (MSG_BROADCAST, org_z);
 };
 
-float(vector org, vector hull_mins, vector hull_maxes) TestBox =
+float(vector center, vector hull_mins, vector hull_maxes) TestBox =
 {
     local float  testpointcontents;
     local vector testpoint0;
@@ -663,23 +663,23 @@ float(vector org, vector hull_mins, vector hull_maxes) TestBox =
     local vector testpoint6;
     local vector testpoint7;
 
-    testpoint0 = org        + hull_mins;
+    testpoint0 = center     + hull_mins;
     testpoint1 = testpoint0;
     testpoint2 = testpoint0;
     testpoint3 = testpoint0;
 
-    testpoint1_x = org_x + hull_maxes_x;
-    testpoint2_y = org_y + hull_maxes_y;
-    testpoint3_x = org_x + hull_mins_x;
+    testpoint1_x = center_x + hull_maxes_x;
+    testpoint2_y = center_y + hull_maxes_y;
+    testpoint3_x = center_x + hull_mins_x;
 
-    testpoint4 = org        + hull_maxes;
+    testpoint4 = center     + hull_maxes;
     testpoint5 = testpoint4;
     testpoint6 = testpoint4;
     testpoint7 = testpoint4;
 
-    testpoint5_x = org_x + hull_mins_x;
-    testpoint6_y = org_y + hull_mins_y;
-    testpoint7_x = org_x + hull_maxes_x;
+    testpoint5_x = center_x + hull_mins_x;
+    testpoint6_y = center_y + hull_mins_y;
+    testpoint7_x = center_x + hull_maxes_x;
 
     testpointcontents = pointcontents (testpoint0);
     if (testpointcontents != CONTENT_SOLID)
@@ -761,7 +761,7 @@ void() Rune_Twalk =
         {
             destination = destination - v_forward * 10;
 
-            destinationtest = TestBox (destination, RN_HULL_MIN, RN_HULL_MAX);
+            destinationtest = TestBox (destination, VEC_HULL_MIN, VEC_HULL_MAX);
 
             testcount = testcount - 1;
         }
