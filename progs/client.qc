@@ -1560,7 +1560,14 @@ void() ClientConnect =
     bprint (" entered the game\n");
 
     //RUNE SERV: motd thingy
-    self.motd_time = time + 2;
+    if (deathmatch)
+    {
+        self.motd_time = time + 2;
+    }
+    else
+    {
+        self.motd_time = 0;
+    }
     self.motd_count = 0;
 
     //        ServerMsg(self);

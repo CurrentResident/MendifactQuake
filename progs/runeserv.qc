@@ -662,16 +662,21 @@ string() RandMap =
 
 void() MOTD =
 {
-    if (self.motd_count < 2)
-    {
-        self.motd_time = time + 1;
-        self.motd_count = self.motd_count + 1;
+    self.motd_time  = time            + 1;  // By default, the client shows centerprint messages for 2 seconds.  Overlap to avoid a strobing MOTD.
+    self.motd_count = self.motd_count + 1;
 
-        if (deathmatch)
-            //            centerprint(self,"Aòôéæáãô Qõáëå 2.1\n€ƒƒƒƒƒƒƒƒ‚\nCollect a rune, get an ability!\n\nIMPULSE “’’ MUST BE BOUND.\nIMPULSE ›› shows your current rune.\nIMPULSE ›š deactivates your rune.\nƒžžžžžžžžžžžƒ\nWritten by ŽÓéÎÇÅ\nE-mail: singe@ix.netcom.com\n€ƒƒƒƒƒƒƒƒ‚");
-        {
-            centerprint (self, "Artifact Quake  -\nby Singe <singe@ix.netcom.com> \n\nthis server is run and modified by \nMendicant-  jjt@umr.edu");
-        }
+    if (self.motd_count <= 2)
+    {
+        //centerprint(self,"Aòôéæáãô Qõáëå 2.1\n€ƒƒƒƒƒƒƒƒ‚\nCollect a rune, get an ability!\n\nIMPULSE “’’ MUST BE BOUND.\nIMPULSE ›› shows your current rune.\nIMPULSE ›š deactivates your rune.\nƒžžžžžžžžžžžƒ\nWritten by ŽÓéÎÇÅ\nE-mail: singe@ix.netcom.com\n€ƒƒƒƒƒƒƒƒ‚");
+        centerprint (self, "Artifact Quake  -\nby Singe <singe@ix.netcom.com> \n\nthis server is run and modified by \nMendicant-  jjt@umr.edu");
+    }
+    else if (self.motd_count <= 6)
+    {
+        centerprint (self, "Bind these impulses:\n\nimpulse 100 - Use rune               \n\nimpulse 99  - Show rune              \n\nimpulse 98  - Drop rune              \n\nimpulse 97  - Show this message again");
+    }
+    else
+    {
+        self.motd_time = 0;
     }
 };
 
