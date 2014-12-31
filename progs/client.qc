@@ -1322,22 +1322,25 @@ void() CheckPowerups =
         self.modelindex = modelindex_eyes;
     }
     else
-
+    {
         //RUNE SERV: Cloaky rune thing.
         if (self.runetype == RN_CLOAK && self.runevar == 1)
         {
             self.modelindex = modelindex_eyes;
         }
         else
-
+        {
             //RUNE SERV: Camo rune.
             if (self.runetype == RN_CAMO && self.runevar == 1)
             {
                 self.modelindex = modelindex_none;
             }
             else
-
-            { self.modelindex = modelindex_player; }	// don't use eyes
+            {
+                self.modelindex = modelindex_player;	// don't use eyes
+            }
+        }
+    }
 
     // invincibility
     if (self.invincible_finished)

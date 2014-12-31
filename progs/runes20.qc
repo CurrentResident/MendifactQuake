@@ -30,7 +30,7 @@ void() Rune_Bomb =
         sprint (self, "­Ž");
         runetex = ftos (self.runevar);
         sprint (self, runetex);
-        sprint (self, "Ž­ ");
+        sprint (self, "Ž­ \n");
 
         self.runetime = time + 0.5;
         self.runevar = self.runevar - 1;
@@ -46,8 +46,6 @@ void() Rune_Bomb =
     WriteCoord (MSG_BROADCAST, self.origin_x);
     WriteCoord (MSG_BROADCAST, self.origin_y);
     WriteCoord (MSG_BROADCAST, self.origin_z);
-
-    sprint (self, "\n");
 
     self.deathtype = "divinewind";
 
