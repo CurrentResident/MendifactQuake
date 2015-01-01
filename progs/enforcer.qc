@@ -75,14 +75,14 @@ void() Laser_Touch =
 
 void (vector org, vector vec) LaunchLaser =
 {
-    local	vector	vec;
+    local	vector	direction;
 
     if (self.classname == "monster_enforcer")
     {
         sound (self, CHAN_WEAPON, "enforcer/enfire.wav", 1, ATTN_NORM);
     }
 
-    vec = normalize (vec);
+    direction = normalize (vec);
 
     newmis = spawn();
     newmis.owner = self;
@@ -95,7 +95,7 @@ void (vector org, vector vec) LaunchLaser =
 
     setorigin (newmis, org);
 
-    newmis.velocity = vec * 600;
+    newmis.velocity = direction * 600;
     newmis.angles = vectoangles (newmis.velocity);
 
     newmis.nextthink = time + 5;
