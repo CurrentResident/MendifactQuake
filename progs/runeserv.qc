@@ -442,6 +442,27 @@ void() Rune_Activate =
     Rune_Tell();
 };
 
+void() Rune_PostThink =
+{
+    if (self.runetype == RN_FLY ||
+       (self.runetype == RN_HEAD && self.runevar == 1))
+    {
+        // Legacy workaround for Darkplaces.  Oldschool quake mods assumed that they could set the
+        // FL_ONGROUND flag in PreThink and that it would be carried forward in the physics processing.
+        // It turns out that (at least in Darkplaces, possibly original Quake and other variants perhaps?)
+        // the code that allows walking-like precision of movement through the air as these oldschool mods
+        // expected actually happens BEFORE PreThink.  So there's a need for the FL_ONGROUND flag to also
+        // get carried from one frame to the next.  Darkplaces' physics and client handling code is pretty
+        // different, and actually clears FL_ONGROUND if the physics processing itself detects no
+        // collision with a floor.  So in order to make the rune flight code work as intended in Darkplaces,
+        // and retain compatibility with original Quake and other ports, we need to get in there and set
+        // FL_ONGROUND again after the physics has run but before the next frame.  We hook PostThink for
+        // that.
+        self.flags = self.flags | FL_ONGROUND;
+    }
+
+};
+
 string() RandMap =
 {
     local float rand;

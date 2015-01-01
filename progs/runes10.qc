@@ -143,6 +143,8 @@ void() Rune_Fly =
     svz = self.velocity_z * 0.75;
     self.velocity_z = 0;
 
+    makevectors (self.v_angle);
+
     // v_forward is already normalized
     f_x = v_forward_x;
     f_y = v_forward_y;
@@ -153,7 +155,10 @@ void() Rune_Fly =
     {
         invcos = 1 / invcos;
     }
-    else { invcos = 0; }
+    else
+    {
+        invcos = 0;
+    }
     f = f * invcos; // normalize f
 
     sp = f * self.velocity;

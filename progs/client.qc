@@ -1163,6 +1163,7 @@ void() CheckWaterJump =
 };
 
 //RUNE SERV: Predefs
+void() Rune_PostThink;
 void() Rune_Think;
 
 /*
@@ -1487,6 +1488,13 @@ Called every frame after physics are run
 */
 void() PlayerPostThink =
 {
+
+    //RUNE SERV MQ:  Runes that need post-physics thinking
+    if (self.runetype > 0)
+    {
+        Rune_PostThink ();
+    }
+
     if (self.view_ofs == '0 0 0')
     {
         return;    // intermission or finale
