@@ -6,7 +6,7 @@ void() Keep_cam_chasing_owner;
 void ( float opt ) Remove_chase_cam;
 
 // defaults reset every time level starts
-float chasecam_alt, chasecam_dist = 72, chasecam_zofs = 24;
+float chasecam_dist = 72, chasecam_zofs = 24;
 
 
 // Resets weapon model after changing view

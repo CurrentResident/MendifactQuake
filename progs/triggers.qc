@@ -1,5 +1,5 @@
 
-entity stemp, otemp, s, old;
+entity s;
 
 
 void() trigger_reactivate =
