@@ -1,5 +1,5 @@
 * Find out how getting hit with weirdness can result in an FOV of 5 that doesn't clear.
 
-* Getting frozen in a freeze spot results in bad, never-correcting v_angle z (roll).
+* Getting frozen in a freeze spot results in inverted model pitch.
 
 * Way too easy to get stuck in a wall in Haunted Head mode.

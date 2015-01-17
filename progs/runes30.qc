@@ -329,8 +329,8 @@ void() Freeze_Frozen =
 {
     setorigin (self.runent, self.origin);
 
-    self.runent.angles = self.angles;
-    self.runent.fixangle = 1;
+    self.runent.angles = self.runent.v_angle = self.v_angle;
+    self.runent.fixangle = TRUE;
     self.runent.attack_finished = time + 1;
     self.runent.frame = self.runevar;
     self.runent.velocity = '0 0 0';
@@ -390,6 +390,7 @@ void() Freeze_Touch =
     self.runent = other;
     self.runevar = other.frame;
     self.angles = other.angles;
+    self.v_angle = other.v_angle;
     self.fixangle = 1;
     setorigin (self, other.origin);
     self.touch = SUB_Null;
