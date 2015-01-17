@@ -901,16 +901,16 @@ void() HauntHead_Think =
         return;
     }
 
-    makevectors (self.owner.angles);
+    makevectors (self.owner.v_angle);
+    //setorigin(self, self.owner.origin + v_up*20 - v_right*1 - v_forward*10);
+    setorigin(self, self.owner.origin - v_right*3 - v_forward*9);   // Emperical
 
-    // setorigin(self, self.owner.origin + v_up*20 - v_right*1 -
-    //  v_forward*9);
-    setorigin (self, self.owner.origin);
     self.nextthink = time;
 
-    self.angles_y = self.owner.v_angle_y - 27;
-    self.angles_x =  0 - self.owner.v_angle_x - 60;
-    //   self.angles_y = self.owner.angles_y - 27;
+    self.angles_x = -self.owner.v_angle_x - 60;
+    self.angles_y =  self.owner.v_angle_y + 0.9283447;  // Emperical + printing ent angles
+    self.angles_z =  self.owner.v_angle_z;
+    self.fixangle = TRUE;
 };
 
 
@@ -927,8 +927,7 @@ void() HauntHead_Spawn =
     setmodel (temp, "progs/h_player.mdl");
     temp.think = HauntHead_Think;
     temp.nextthink = time;
-    temp.angles_x = -60;
-    temp.angles_z = -30;
+    temp.angles = self.angles;
     temp.colormap = self.colormap;
     self.runent = temp;
 };
@@ -940,7 +939,8 @@ void () Rune_Head_Button =
         self.runetime = self.modelindex;
         setmodel (self, "");
         self.modelindex = modelindex_none;
-        setsize (self, '-10 -10 -10', '10 10 10');
+        //setsize (self, '-10 -10 -10', '10 10 10');
+        setsize (self, VEC_HULL_MIN, VEC_HULL_MAX);
         self.runevar = 1;
         self.head_saved_weapon = self.weapon;
         self.weapon = 0;
