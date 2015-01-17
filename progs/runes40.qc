@@ -836,7 +836,10 @@ void () Rune_Ghost_Button =
         traceline (org, org + v_forward * 1500.0, FALSE, self);
         grabee = trace_ent;
 
-        if (grabee.solid != SOLID_BSP && grabee != world)
+        if (grabee.solid     != SOLID_BSP &&
+            grabee.solid     != SOLID_TRIGGER &&
+            grabee.classname != "trigger_once" &&
+            grabee           != world)
         {
             controller = spawn ();
             controller.movetype = MOVETYPE_FLY;
@@ -862,6 +865,7 @@ void () Rune_Ghost_Button =
             //bprint ("Grabbing ");
             //bprint (grabee.classname);
             //bprint ("\n");
+            //eprint (grabee);
         }
 
         WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
