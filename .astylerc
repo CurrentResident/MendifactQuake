@@ -1,0 +1,8 @@
+
+# .astylerc
+
+--style=bsd
+--add-braces    # Add braces to unbraced one line conditional statements
+--suffix=none   # No *.orig backups - just let git do that!
+
+--lineend=windows   # Because I'm doing this on windows.
