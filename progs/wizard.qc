@@ -146,7 +146,9 @@ float()	WizardCheckAttack =
         chance = 0.2;
     }
     else
-    { chance = 0; }
+    {
+        chance = 0;
+    }
 
     if (random () < chance)
     {

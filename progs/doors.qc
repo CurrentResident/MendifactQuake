@@ -734,14 +734,16 @@ void () fd_secret_use =
         self.dest1 = self.origin - v_up * self.t_width;
     }
     else
-    { self.dest1 = self.origin + v_right * (self.t_width * temp); }
+    {
+        self.dest1 = self.origin + v_right * (self.t_width * temp);
+    }
 
     self.dest2 = self.dest1 + v_forward * self.t_length;
     SUB_CalcMove (self.dest1, self.speed, fd_secret_move1);
     sound (self, CHAN_VOICE, self.noise2, 1, ATTN_NORM);
 };
 
-void (entity attacker, float damage) fd_secret_use_pain_wrapper = 
+void (entity attacker, float damage) fd_secret_use_pain_wrapper =
 {
     fd_secret_use();
 };

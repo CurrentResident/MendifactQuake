@@ -445,7 +445,7 @@ void() Rune_Activate =
 void() Rune_PostThink =
 {
     if (self.runetype == RN_FLY ||
-       (self.runetype == RN_HEAD && self.runevar == 1))
+            (self.runetype == RN_HEAD && self.runevar == 1))
     {
         // Legacy workaround for Darkplaces.  Oldschool quake mods assumed that they could set the
         // FL_ONGROUND flag in PreThink and that it would be carried forward in the physics processing.
@@ -758,8 +758,8 @@ entity() SelectRuneSpawnPoint =
     //Now runec checks for HUGE HUGE loops to prevent crashing
 
     while ((   (runespawn.classname == "player")
-            || (runespawn.classname == "rune")
-            || (runespawn           == world)
+               || (runespawn.classname == "rune")
+               || (runespawn           == world)
            )
             && runec < 1500)
     {
@@ -777,7 +777,7 @@ float(entity rune) Rune_Must_Move =
     i = pointcontents (rune.origin);
 
     if ((i == CONTENT_SOLID && ! (self.flags & FL_ONGROUND)) ||
-         i == CONTENT_LAVA)
+            i == CONTENT_LAVA)
     {
         return i;
     }
@@ -813,7 +813,7 @@ void() Rune_Clip_Check =
     // 3.  If the rune is SOLID and ON GROUND, it's at rest and is okay.
     // 4.  If the rune is NOT SOLID and ON GROUND, that's also okay at rest.
     // 5.  Just delete right away if LAVA.
-    // 
+    //
 
     //DEBUG if (self.flags & FL_ONGROUND)
     //DEBUG {
@@ -833,7 +833,7 @@ void() Rune_Clip_Check =
         {
             // Set touch to null because if the rune is falling outside the map, the Touch
             // will fire and reset think to this function.
-            // 
+            //
             //DEBUG bprint ("Attempting to clean up\n");
             self.think  = Rune_Recycle;
             self.touch  = SUB_Null;

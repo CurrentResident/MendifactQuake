@@ -256,7 +256,8 @@ void() GFire_Spawn =
         sound (fire, CHAN_AUTO, "hknight/hit.wav", 1, ATTN_NORM);
         fire.frame = 1;
     }
-    else {
+    else
+    {
         sound (fire, CHAN_AUTO, "weapons/ax1.wav", 1, ATTN_NORM);
         fire.frame = 0;
     }

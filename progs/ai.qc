@@ -722,7 +722,9 @@ void() ai_run_slide =
         ofs = 90;
     }
     else
-    { ofs = -90; }
+    {
+        ofs = -90;
+    }
 
     if (walkmove (self.ideal_yaw + ofs, movedist))
     {

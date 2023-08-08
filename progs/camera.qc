@@ -119,7 +119,9 @@ void ( float opt ) Remove_chase_cam =
         self.think = Reable_chase_cam;
     }
     else
-    { remove ( self ); }
+    {
+        remove ( self );
+    }
 
 };
 
@@ -204,7 +206,9 @@ void() Keep_cam_chasing_owner =
         }
     }
     else
-    { self.ammo_cells = 0; }
+    {
+        self.ammo_cells = 0;
+    }
 
 
     makevectors ( self.owner.v_angle );
@@ -237,7 +241,9 @@ void() Keep_cam_chasing_owner =
         spot2 = spot2 - (v_right * (chasecam_zofs));
     }
     else
-    { spot2 = spot2 + (v_right * (chasecam_zofs)); }
+    {
+        spot2 = spot2 + (v_right * (chasecam_zofs));
+    }
 
 
     traceline (self.owner.origin, spot2, FALSE, self.owner);
@@ -298,7 +304,9 @@ void() Keep_cam_chasing_owner =
 
     }
     else
-    { setorigin ( self, spot2 ); }
+    {
+        setorigin ( self, spot2 );
+    }
 
 
     // fade back from walls

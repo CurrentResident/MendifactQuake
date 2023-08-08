@@ -102,7 +102,9 @@ void()	Tar_JumpTouch =
         }
     }
     else
-    { sound (self, CHAN_WEAPON, "blob/land1.wav", 1, ATTN_NORM); }
+    {
+        sound (self, CHAN_WEAPON, "blob/land1.wav", 1, ATTN_NORM);
+    }
 
 
     if (!checkbottom (self))

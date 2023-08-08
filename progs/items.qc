@@ -446,7 +446,7 @@ Deathmatch weapon change rules for picking up a weapon
 */
 void (float old, float new) Deathmatch_Weapon =
 {
-    local float or , nr;
+    local float or, nr;
 
     // change self.weapon if desired
     or = RankForWeapon (self.weapon);
@@ -489,7 +489,9 @@ void() weapon_touch =
         leave = 1;
     }
     else
-    { leave = 0; }
+    {
+        leave = 0;
+    }
 
     if (self.classname == "weapon_nailgun")
     {
@@ -583,7 +585,9 @@ void() weapon_touch =
         self.weapon = new;
     }
     else
-    { Deathmatch_Weapon (old, new); }
+    {
+        Deathmatch_Weapon (old, new);
+    }
 
     W_SetCurrentAmmo();
 
@@ -1249,7 +1253,7 @@ void() powerup_touch =
         self.mdl = self.model;
 
         if ((self.classname == "item_artifact_invulnerability") ||
-        (self.classname == "item_artifact_invisibility"))
+                (self.classname == "item_artifact_invisibility"))
         {
             self.nextthink = time + 60 * 5;
         }
@@ -1504,7 +1508,9 @@ void() BackpackTouch =
         self.weapon = new;
     }
     else
-    { Deathmatch_Weapon (old, new); }
+    {
+        Deathmatch_Weapon (old, new);
+    }
 
     W_SetCurrentAmmo ();
 };
@@ -1561,7 +1567,9 @@ void() DropBackpack =
         item.netname = "Thunderbolt";
     }
     else
-    { item.netname = ""; }
+    {
+        item.netname = "";
+    }
 
     item.ammo_shells = self.ammo_shells;
     item.ammo_nails = self.ammo_nails;

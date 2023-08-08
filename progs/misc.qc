@@ -359,7 +359,9 @@ void() trap_spikeshooter =
         precache_sound2 ("enforcer/enfstop.wav");
     }
     else
-    { precache_sound ("weapons/spike2.wav"); }
+    {
+        precache_sound ("weapons/spike2.wav");
+    }
 };
 
 

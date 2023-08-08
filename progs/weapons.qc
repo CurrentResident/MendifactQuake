@@ -198,7 +198,9 @@ void (entity hit, float damage) AddMultiDamage =
         multi_ent = hit;
     }
     else
-    { multi_damage = multi_damage + damage; }
+    {
+        multi_damage = multi_damage + damage;
+    }
 };
 
 /*
@@ -317,7 +319,7 @@ void() W_FireSuperShotgun =
     //RUNE SERV: cloak rune. No sound
     if (self.runetype != RN_CLOAK)
     {
-        sound (self , CHAN_WEAPON, "weapons/shotgn2.wav", 1, ATTN_NORM);
+        sound (self, CHAN_WEAPON, "weapons/shotgn2.wav", 1, ATTN_NORM);
     }
 
     self.punchangle_x = -4;
@@ -551,7 +553,9 @@ void() W_FireLightning =
     }
     else
 
-    { traceline (org, org + v_forward * 600, TRUE, self); }
+    {
+        traceline (org, org + v_forward * 600, TRUE, self);
+    }
 
     WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
     WriteByte (MSG_BROADCAST, TE_LIGHTNING2);
@@ -697,7 +701,9 @@ void (vector org, vector dir) launch_spike =
     }
     else
 
-    { newmis.velocity = dir * 1000; }
+    {
+        newmis.velocity = dir * 1000;
+    }
 };
 
 void() W_FireSuperSpikes =
@@ -794,7 +800,9 @@ void() spike_touch =
             WriteByte (MSG_BROADCAST, TE_KNIGHTSPIKE);
         }
         else
-        { WriteByte (MSG_BROADCAST, TE_SPIKE); }
+        {
+            WriteByte (MSG_BROADCAST, TE_SPIKE);
+        }
         WriteCoord (MSG_BROADCAST, self.origin_x);
         WriteCoord (MSG_BROADCAST, self.origin_y);
         WriteCoord (MSG_BROADCAST, self.origin_z);
@@ -1617,7 +1625,7 @@ void() ImpulseCommands =
 
     //Create a rune
     if (self.impulse == 96 &&
-        (deathmatch == 8 || deathmatch == 0))
+            (deathmatch == 8 || deathmatch == 0))
     {
         makevectors (self.v_angle);
         Rune_Spawn (self.origin + v_forward * 200, 500, 500, 500);

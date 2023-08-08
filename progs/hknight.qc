@@ -123,7 +123,9 @@ void() CheckContinueCharge =
         sound (self, CHAN_WEAPON, "knight/sword2.wav", 1, ATTN_NORM);
     }
     else
-    { sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM); }
+    {
+        sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
+    }
 };
 
 //===========================================================================
@@ -237,7 +239,9 @@ void() hknight_die =
         hknight_die1 ();
     }
     else
-    { hknight_dieb1 (); }
+    {
+        hknight_dieb1 ();
+    }
 };
 
 

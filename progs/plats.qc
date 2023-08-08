@@ -145,7 +145,9 @@ void() plat_crush =
         plat_go_up ();
     }
     else
-    { objerror ("plat_crush: bad self.state\n"); }
+    {
+        objerror ("plat_crush: bad self.state\n");
+    }
 };
 
 void() plat_use =
@@ -219,7 +221,7 @@ void() func_plat =
     self.movetype = MOVETYPE_PUSH;
     setorigin (self, self.origin);
     setmodel (self, self.model);
-    setsize (self, self.mins , self.maxs);
+    setsize (self, self.mins, self.maxs);
 
     self.blocked = plat_crush;
 
@@ -237,7 +239,9 @@ void() func_plat =
         self.pos2_z = self.origin_z - self.height;
     }
     else
-    { self.pos2_z = self.origin_z - self.size_z + 8; }
+    {
+        self.pos2_z = self.origin_z - self.size_z + 8;
+    }
 
     self.use = plat_trigger_use;
 
@@ -288,7 +292,9 @@ void() train_wait =
         sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
     }
     else
-    { self.nextthink = self.ltime + 0.1; }
+    {
+        self.nextthink = self.ltime + 0.1;
+    }
 
     self.think = train_next;
 };
@@ -310,7 +316,9 @@ void() train_next =
         self.wait = targ.wait;
     }
     else
-    { self.wait = 0; }
+    {
+        self.wait = 0;
+    }
     sound (self, CHAN_VOICE, self.noise1, 1, ATTN_NORM);
     SUB_CalcMove (targ.origin - self.mins, self.speed, train_wait);
 };
@@ -384,7 +392,7 @@ void() func_train =
     self.classname = "train";
 
     setmodel (self, self.model);
-    setsize (self, self.mins , self.maxs);
+    setsize (self, self.mins, self.maxs);
     setorigin (self, self.origin);
 
     // start trains on the second frame, to make sure their targets have had
@@ -422,7 +430,7 @@ void() misc_teleporttrain =
 
     precache_model2 ("progs/teleport.mdl");
     setmodel (self, "progs/teleport.mdl");
-    setsize (self, self.mins , self.maxs);
+    setsize (self, self.mins, self.maxs);
     setorigin (self, self.origin);
 
     // start trains on the second frame, to make sure their targets have had

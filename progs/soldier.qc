@@ -253,7 +253,9 @@ void() army_die =
         army_die1 ();
     }
     else
-    { army_cdie1 (); }
+    {
+        army_cdie1 ();
+    }
 };
 
 

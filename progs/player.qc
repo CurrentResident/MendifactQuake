@@ -400,7 +400,9 @@ void() PainSound =
         self.noise = "player/pain5.wav";
     }
     else
-    { self.noise = "player/pain6.wav"; }
+    {
+        self.noise = "player/pain6.wav";
+    }
 
     sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
     return;
@@ -437,7 +439,9 @@ void (entity attacker, float damage) player_pain =
         player_axpain1 ();
     }
     else
-    { player_pain1 (); }
+    {
+        player_pain1 ();
+    }
 };
 
 void() player_diea1;
@@ -571,7 +575,9 @@ vector (float dm) VelocityForDamage =
         v = v * 2;
     }
     else
-    { v = v * 10; }
+    {
+        v = v * 10;
+    }
 
     return v;
 };
@@ -640,7 +646,9 @@ void() GibPlayer =
         sound (self, CHAN_VOICE, "player/gib.wav", 1, ATTN_NONE);
     }
     else
-    { sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE); }
+    {
+        sound (self, CHAN_VOICE, "player/udeath.wav", 1, ATTN_NONE);
+    }
 };
 
 void() PlayerDie =

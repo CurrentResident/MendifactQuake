@@ -254,7 +254,7 @@ void() counter_use =
     if (self.count != 0)
     {
         if (activator.classname == "player"
-        && (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0)
+                && (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0)
         {
             if (self.count >= 4)
             {
@@ -342,7 +342,9 @@ void() play_teleport =
         tmpstr = "misc/r_tele4.wav";
     }
     else
-    { tmpstr = "misc/r_tele5.wav"; }
+    {
+        tmpstr = "misc/r_tele5.wav";
+    }
 
     sound (self, CHAN_VOICE, tmpstr, 1, ATTN_NORM);
     remove (self);
@@ -533,7 +535,7 @@ void() trigger_teleport =
     {
         precache_sound ("ambience/hum1.wav");
         o = (self.mins + self.maxs) * 0.5;
-        ambientsound (o, "ambience/hum1.wav", 0.5 , ATTN_STATIC);
+        ambientsound (o, "ambience/hum1.wav", 0.5, ATTN_STATIC);
     }
 };
 

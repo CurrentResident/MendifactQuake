@@ -190,7 +190,9 @@ void() ShalHome =
         self.velocity = dir * 350;
     }
     else
-    { self.velocity = dir * 250; }
+    {
+        self.velocity = dir * 250;
+    }
     self.nextthink = time + 0.2;
     self.think = ShalHome;
 };

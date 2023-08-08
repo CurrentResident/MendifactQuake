@@ -273,7 +273,9 @@ void() zombie_missile =
         zombie_attb1 ();
     }
     else
-    { zombie_attc1 (); }
+    {
+        zombie_attc1 ();
+    }
 };
 
 
@@ -497,7 +499,9 @@ void (entity attacker, float take) zombie_pain =
         zombie_painc1 ();
     }
     else
-    { zombie_paind1 (); }
+    {
+        zombie_paind1 ();
+    }
 };
 
 //============================================================================
@@ -550,5 +554,7 @@ void() monster_zombie =
         zombie_cruc1 ();
     }
     else
-    { walkmonster_start(); }
+    {
+        walkmonster_start();
+    }
 };

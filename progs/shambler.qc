@@ -223,7 +223,9 @@ void() sham_melee =
         sham_swingr1 ();
     }
     else
-    { sham_swingl1 (); }
+    {
+        sham_swingl1 ();
+    }
 };
 
 

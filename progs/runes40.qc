@@ -256,8 +256,8 @@ void() Rune_ShamblerThink =
 
     //The end to passive shamblers
     if (self.runent.enemy == self.runent.owner ||
-        self.runent.enemy.health < 1 ||
-        self.runent.enemy.classname == "worldspawn")
+            self.runent.enemy.health < 1 ||
+            self.runent.enemy.classname == "worldspawn")
     {
         local entity head, selected;
         local float dist;
@@ -761,15 +761,15 @@ void () Rune_Ghost_Think =
     //  * Owner somehow lost the rune  (suicide or disconnect???)
     //  * Owner has died.
     //  * Grabee has died.
-    //  * Grabee's egongrabber points back to world 
+    //  * Grabee's egongrabber points back to world
     //      (indicates sudden respawn, still allows multi grabbers.
     //          Make big assumption that egongrabber ONLY gets reset during respawn.
     //          We can try to fix this by chaining the Egon controllers when grabbing the same entity.)
     if (self.owner.runent != self ||
-        self.owner.runetype != RN_GHOST ||
-        self.owner.health < 1 ||
-        self.runent.health < 1 ||
-        self.runent.egongrabber == world)
+            self.owner.runetype != RN_GHOST ||
+            self.owner.health < 1 ||
+            self.runent.health < 1 ||
+            self.runent.egongrabber == world)
     {
         if (self.owner.runent == self)
         {
@@ -797,7 +797,7 @@ void () Rune_Ghost_Think =
 
             //This keeps the grabee from firing.
             //self.runent.attack_finished = time + 1;
-            
+
             // The update interval of this rune is controlled here.  For now, update every time.
             self.runetime = time;
 
@@ -827,7 +827,7 @@ void () Rune_Ghost_Button =
     //bprint ("Button Hit!\n");
 
     // Runent is points to the world if nothing is grabbed.  Otherwise it points to the Egon controller entity.
-    // 
+    //
     if (self.runent == world)
     {
         //bprint ("Searching...\n");
@@ -836,7 +836,8 @@ void () Rune_Ghost_Button =
         traceline (org, org + v_forward * 1500.0, FALSE, self);
         grabee = trace_ent;
 
-        if (grabee.solid     != SOLID_BSP &&
+        if (
+            grabee.solid     != SOLID_BSP &&
             grabee.solid     != SOLID_TRIGGER &&
             grabee.classname != "trigger_once" &&
             grabee           != world)
@@ -895,7 +896,7 @@ void () Rune_Ghost_Button =
 void() HauntHead_Think =
 {
     if (self.owner.health < 1 ||
-        ! (self.owner.runetype == RN_HEAD && self.owner.runevar == 1))
+            ! (self.owner.runetype == RN_HEAD && self.owner.runevar == 1))
     {
         remove (self);
         return;

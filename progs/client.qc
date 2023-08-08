@@ -43,7 +43,7 @@ void() SetChangeParms =
 
     // remove items
     self.items = self.items - (self.items &
-    (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD) );
+                               (IT_KEY1 | IT_KEY2 | IT_INVISIBILITY | IT_INVULNERABILITY | IT_SUIT | IT_QUAD) );
 
     // cap super health
     if (self.health > 100)
@@ -206,7 +206,9 @@ void() GotoNextMap =
         changelevel (mapname);
     }
     else
-    { changelevel (nextmap); }
+    {
+        changelevel (nextmap);
+    }
 
 };
 
@@ -336,7 +338,9 @@ void() execute_changelevel =
         intermission_exittime = time + 5;
     }
     else
-    { intermission_exittime = time + 2; }
+    {
+        intermission_exittime = time + 2;
+    }
 
     WriteByte (MSG_ALL, SVC_CDTRACK);
     WriteByte (MSG_ALL, 3);

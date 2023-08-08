@@ -127,7 +127,7 @@ void()	enf_stand5	= [	$stand5,	enf_stand6	] {ai_stand();};
 void()	enf_stand6	= [	$stand6,	enf_stand7	] {ai_stand();};
 void()	enf_stand7	= [	$stand7,	enf_stand1	] {ai_stand();};
 
-void()	enf_walk1	= [	$walk1 ,	enf_walk2	]
+void()	enf_walk1	= [	$walk1,	enf_walk2	]
 {
     if (random() < 0.2)
     {
@@ -136,14 +136,14 @@ void()	enf_walk1	= [	$walk1 ,	enf_walk2	]
 
     ai_walk (2);
 };
-void()	enf_walk2	= [	$walk2 ,	enf_walk3	] {ai_walk (4);};
-void()	enf_walk3	= [	$walk3 ,	enf_walk4	] {ai_walk (4);};
-void()	enf_walk4	= [	$walk4 ,	enf_walk5	] {ai_walk (3);};
-void()	enf_walk5	= [	$walk5 ,	enf_walk6	] {ai_walk (1);};
-void()	enf_walk6	= [	$walk6 ,	enf_walk7	] {ai_walk (2);};
-void()	enf_walk7	= [	$walk7 ,	enf_walk8	] {ai_walk (2);};
-void()	enf_walk8	= [	$walk8 ,	enf_walk9	] {ai_walk (1);};
-void()	enf_walk9	= [	$walk9 ,	enf_walk10	] {ai_walk (2);};
+void()	enf_walk2	= [	$walk2,	enf_walk3	] {ai_walk (4);};
+void()	enf_walk3	= [	$walk3,	enf_walk4	] {ai_walk (4);};
+void()	enf_walk4	= [	$walk4,	enf_walk5	] {ai_walk (3);};
+void()	enf_walk5	= [	$walk5,	enf_walk6	] {ai_walk (1);};
+void()	enf_walk6	= [	$walk6,	enf_walk7	] {ai_walk (2);};
+void()	enf_walk7	= [	$walk7,	enf_walk8	] {ai_walk (2);};
+void()	enf_walk8	= [	$walk8,	enf_walk9	] {ai_walk (1);};
+void()	enf_walk9	= [	$walk9,	enf_walk10	] {ai_walk (2);};
 void()	enf_walk10	= [	$walk10,	enf_walk11	] {ai_walk (4);};
 void()	enf_walk11	= [	$walk11,	enf_walk12	] {ai_walk (4);};
 void()	enf_walk12	= [	$walk12,	enf_walk13	] {ai_walk (1);};
@@ -152,7 +152,7 @@ void()	enf_walk14	= [	$walk14,	enf_walk15	] {ai_walk (3);};
 void()	enf_walk15	= [	$walk15,	enf_walk16	] {ai_walk (4);};
 void()	enf_walk16	= [	$walk16,	enf_walk1	] {ai_walk (2);};
 
-void()	enf_run1	= [	$run1  ,	enf_run2	]
+void()	enf_run1	= [	$run1,	enf_run2	]
 {
     if (random() < 0.2)
     {
@@ -161,13 +161,13 @@ void()	enf_run1	= [	$run1  ,	enf_run2	]
 
     ai_run (18);
 };
-void()	enf_run2	= [	$run2  ,	enf_run3	] {ai_run (14);};
-void()	enf_run3	= [	$run3  ,	enf_run4	] {ai_run (7);};
-void()	enf_run4	= [	$run4  ,	enf_run5	] {ai_run (12);};
-void()	enf_run5	= [	$run5  ,	enf_run6	] {ai_run (14);};
-void()	enf_run6	= [	$run6  ,	enf_run7	] {ai_run (14);};
-void()	enf_run7	= [	$run7  ,	enf_run8	] {ai_run (7);};
-void()	enf_run8	= [	$run8  ,	enf_run1	] {ai_run (11);};
+void()	enf_run2	= [	$run2,	enf_run3	] {ai_run (14);};
+void()	enf_run3	= [	$run3,	enf_run4	] {ai_run (7);};
+void()	enf_run4	= [	$run4,	enf_run5	] {ai_run (12);};
+void()	enf_run5	= [	$run5,	enf_run6	] {ai_run (14);};
+void()	enf_run6	= [	$run6,	enf_run7	] {ai_run (14);};
+void()	enf_run7	= [	$run7,	enf_run8	] {ai_run (7);};
+void()	enf_run8	= [	$run8,	enf_run1	] {ai_run (11);};
 
 void()	enf_atk1	= [	$attack1,	enf_atk2	] {ai_face();};
 void()	enf_atk2	= [	$attack2,	enf_atk3	] {ai_face();};
@@ -243,7 +243,9 @@ void (entity attacker, float damage)	enf_pain =
         sound (self, CHAN_VOICE, "enforcer/pain1.wav", 1, ATTN_NORM);
     }
     else
-    { sound (self, CHAN_VOICE, "enforcer/pain2.wav", 1, ATTN_NORM); }
+    {
+        sound (self, CHAN_VOICE, "enforcer/pain2.wav", 1, ATTN_NORM);
+    }
 
     if (r < 0.2)
     {
@@ -326,7 +328,9 @@ void() enf_die =
         enf_die1 ();
     }
     else
-    { enf_fdie1 (); }
+    {
+        enf_fdie1 ();
+    }
 };
 
 

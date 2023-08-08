@@ -255,7 +255,9 @@ void() boss_awake =
         self.health = 1;
     }
     else
-    { self.health = 3; }
+    {
+        self.health = 3;
+    }
 
     self.enemy = activator;
 

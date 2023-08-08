@@ -143,7 +143,7 @@ void() Rune_Switch =
 {
     local vector tempv, org;
     local float tempf;
-    local entity switch, tempe;
+    local entity switch_ent, tempe;
 
     local vector f, p1, p2;
 
@@ -162,30 +162,30 @@ void() Rune_Switch =
 
     traceline (p1, p2, FALSE, self);
 
-    switch = trace_ent;
+    switch_ent = trace_ent;
 
     makevectors (self.angles);
 
-    if (switch.health > 0 && switch.solid != SOLID_BSP)
+    if (switch_ent.health > 0 && switch_ent.solid != SOLID_BSP)
     {
-        spawn_tfog (switch.origin);
+        spawn_tfog (switch_ent.origin);
         spawn_tfog (self.origin);
 
         //Switch places
-        tempv = switch.origin;
-        setorigin (switch, self.origin);
+        tempv = switch_ent.origin;
+        setorigin (switch_ent, self.origin);
         setorigin (self, tempv);
 
         //Switch angles
-        tempv_y = switch.angles_y;
-        switch.angles_y = self.angles_y;
+        tempv_y = switch_ent.angles_y;
+        switch_ent.angles_y = self.angles_y;
         self.angles_y = tempv_y;
         self.fixangle = 1;
-        switch.fixangle = 1;
+        switch_ent.fixangle = 1;
 
         //Switch velocity
-        tempv = switch.velocity;
-        switch.velocity = self.velocity;
+        tempv = switch_ent.velocity;
+        switch_ent.velocity = self.velocity;
         self.velocity = tempv;
 
         //Lightning zap
@@ -195,85 +195,85 @@ void() Rune_Switch =
         WriteCoord (MSG_BROADCAST, self.origin_x);
         WriteCoord (MSG_BROADCAST, self.origin_y);
         WriteCoord (MSG_BROADCAST, self.origin_z);
-        WriteCoord (MSG_BROADCAST, switch.origin_x);
-        WriteCoord (MSG_BROADCAST, switch.origin_y);
-        WriteCoord (MSG_BROADCAST, switch.origin_z);
+        WriteCoord (MSG_BROADCAST, switch_ent.origin_x);
+        WriteCoord (MSG_BROADCAST, switch_ent.origin_y);
+        WriteCoord (MSG_BROADCAST, switch_ent.origin_z);
 
         //Switch health
-        tempf = switch.health;
-        switch.health = self.health;
+        tempf = switch_ent.health;
+        switch_ent.health = self.health;
         self.health = tempf;
 
-        if (switch.classname == "player")
+        if (switch_ent.classname == "player")
         {
-            //Invis vars switch
-            if ((switch.items & IT_INVISIBILITY) || (self.items & IT_INVISIBILITY))
+            //Invis vars switch_ent
+            if ((switch_ent.items & IT_INVISIBILITY) || (self.items & IT_INVISIBILITY))
             {
-                tempf = switch.invisible_finished;
-                switch.invisible_finished = self.invisible_finished;
+                tempf = switch_ent.invisible_finished;
+                switch_ent.invisible_finished = self.invisible_finished;
                 self.invisible_finished = tempf;
 
-                tempf = switch.invisible_time;
-                switch.invisible_time = self.invisible_time;
+                tempf = switch_ent.invisible_time;
+                switch_ent.invisible_time = self.invisible_time;
                 self.invisible_time = tempf;
             }
 
-            //Pentagram vars switch
-            if ((switch.items & IT_INVULNERABILITY) || (self.items & IT_INVULNERABILITY))
+            //Pentagram vars switch_ent
+            if ((switch_ent.items & IT_INVULNERABILITY) || (self.items & IT_INVULNERABILITY))
             {
-                tempf = switch.invincible_finished;
-                switch.invincible_finished = self.invincible_finished;
+                tempf = switch_ent.invincible_finished;
+                switch_ent.invincible_finished = self.invincible_finished;
                 self.invincible_finished = tempf;
 
-                tempf = switch.invincible_time;
-                switch.invincible_time = self.invincible_time;
+                tempf = switch_ent.invincible_time;
+                switch_ent.invincible_time = self.invincible_time;
                 self.invincible_time = tempf;
             }
 
-            //Quad vars switch
-            if ((switch.items & IT_QUAD) || (self.items & IT_QUAD))
+            //Quad vars switch_ent
+            if ((switch_ent.items & IT_QUAD) || (self.items & IT_QUAD))
             {
-                tempf = switch.super_damage_finished;
-                switch.super_damage_finished = self.super_damage_finished;
+                tempf = switch_ent.super_damage_finished;
+                switch_ent.super_damage_finished = self.super_damage_finished;
                 self.super_damage_finished = tempf;
 
-                tempf = switch.super_time;
-                switch.super_time = self.super_time;
+                tempf = switch_ent.super_time;
+                switch_ent.super_time = self.super_time;
                 self.super_time = tempf;
             }
 
-            //Biosuit vars switch
-            if ((switch.items & IT_SUIT) || (self.items & IT_SUIT))
+            //Biosuit vars switch_ent
+            if ((switch_ent.items & IT_SUIT) || (self.items & IT_SUIT))
             {
-                tempf = switch.radsuit_finished;
-                switch.radsuit_finished = self.radsuit_finished;
+                tempf = switch_ent.radsuit_finished;
+                switch_ent.radsuit_finished = self.radsuit_finished;
                 self.radsuit_finished = tempf;
 
-                tempf = switch.rad_time;
-                switch.rad_time = self.rad_time;
+                tempf = switch_ent.rad_time;
+                switch_ent.rad_time = self.rad_time;
                 self.rad_time = tempf;
             }
 
             //Switch items
-            tempf = switch.items;
-            switch.items = self.items;
+            tempf = switch_ent.items;
+            switch_ent.items = self.items;
             self.items = tempf;
 
             //Switch ammo
-            tempf = switch.ammo_shells;
-            switch.ammo_shells = self.ammo_shells;
+            tempf = switch_ent.ammo_shells;
+            switch_ent.ammo_shells = self.ammo_shells;
             self.ammo_shells = tempf;
 
-            tempf = switch.ammo_nails;
-            switch.ammo_nails = self.ammo_nails;
+            tempf = switch_ent.ammo_nails;
+            switch_ent.ammo_nails = self.ammo_nails;
             self.ammo_nails = tempf;
 
-            tempf = switch.ammo_rockets;
-            switch.ammo_rockets = self.ammo_rockets;
+            tempf = switch_ent.ammo_rockets;
+            switch_ent.ammo_rockets = self.ammo_rockets;
             self.ammo_rockets = tempf;
 
-            tempf = switch.ammo_cells;
-            switch.ammo_cells = self.ammo_cells;
+            tempf = switch_ent.ammo_cells;
+            switch_ent.ammo_cells = self.ammo_cells;
             self.ammo_cells = tempf;
 
             if (self.ammo_shells < 25)
@@ -281,12 +281,12 @@ void() Rune_Switch =
                 self.ammo_shells = 25;
             }
 
-            if (switch.ammo_shells < 25)
+            if (switch_ent.ammo_shells < 25)
             {
-                switch.ammo_shells = 25;
+                switch_ent.ammo_shells = 25;
             }
 
-            centerprint (switch, "You've switched places!");
+            centerprint (switch_ent, "You've switched places!");
 
             self.weapon = W_BestWeapon();
             W_SetCurrentAmmo();
@@ -294,9 +294,9 @@ void() Rune_Switch =
 
             tempe = self;
 
-            self = switch;
+            self = switch_ent;
 
-        self.weapon = W_BestWeapon();
+            self.weapon = W_BestWeapon();
             W_SetCurrentAmmo();
             CheckPowerups();
 
@@ -606,7 +606,7 @@ void () Rune_Impact =
         makevectors (self.v_angle);
         self.velocity = self.velocity + 1200.0 * v_forward;
         sound (self, CHAN_AUTO, "doors/airdoor2.wav", 1,
-        ATTN_NORM);
+               ATTN_NORM);
         self.touch = Impact_Touch;
     }
 };
@@ -722,7 +722,7 @@ void() Rune_Twalk =
 {
     local vector org, place;
 
-    local entity switch;
+    local entity switch_ent;
 
     local vector p1, p2;
 
@@ -734,11 +734,11 @@ void() Rune_Twalk =
 
     traceline (p1, p2, FALSE, self);
 
-    switch = trace_ent;
+    switch_ent = trace_ent;
 
     particle (trace_endpos, '0 0 0', 8, 100);
 
-    if (switch == world)
+    if (switch_ent == world)
     {
         local vector    destination;
         local float     destinationtest;
@@ -776,29 +776,29 @@ void() Rune_Twalk =
         return;
     }
 
-    if (switch.flags & FL_ITEM)
+    if (switch_ent.flags & FL_ITEM)
     {
-        setorigin (self, switch.origin);
+        setorigin (self, switch_ent.origin);
         return;
     }
 
-    if (switch.health > 0 && switch.solid != SOLID_BSP && switch.movetype != MOVETYPE_NONE)
+    if (switch_ent.health > 0 && switch_ent.solid != SOLID_BSP && switch_ent.movetype != MOVETYPE_NONE)
     {
         spawn_tfog (self.origin);
-        spawn_tfog (switch.origin);
+        spawn_tfog (switch_ent.origin);
 
         if (random() < 0.3)
         {
             spawn_tdeath (self.origin, self);
         }
 
-        place = switch.origin;
-        setorigin (switch, self.origin);
+        place = switch_ent.origin;
+        setorigin (switch_ent, self.origin);
         setorigin (self, place);
 
-        if (switch.classname == "player")
+        if (switch_ent.classname == "player")
         {
-            centerprint (switch, "Someone stole your place!");
+            centerprint (switch_ent, "Someone stole your place!");
         }
 
         return;
@@ -888,7 +888,9 @@ void() ShubHat_Spawn =
         temp.avelocity_y = 100;
     }
     else
-    { temp.avelocity_y = -100; }
+    {
+        temp.avelocity_y = -100;
+    }
     temp.colormap = self.colormap;
     self.runent = temp;
 };

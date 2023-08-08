@@ -445,7 +445,9 @@ void() ogre_die =
         ogre_die1 ();
     }
     else
-    { ogre_bdie1 (); }
+    {
+        ogre_bdie1 ();
+    }
 };
 
 void() ogre_melee =
@@ -455,7 +457,9 @@ void() ogre_melee =
         ogre_smash1 ();
     }
     else
-    { ogre_swing1 (); }
+    {
+        ogre_swing1 ();
+    }
 };
 
 

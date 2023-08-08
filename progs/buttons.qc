@@ -134,7 +134,9 @@ void() func_button =
         self.takedamage = DAMAGE_YES;
     }
     else
-    { self.touch = button_touch; }
+    {
+        self.touch = button_touch;
+    }
 
     if (!self.speed)
     {

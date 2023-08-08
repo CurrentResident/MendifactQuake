@@ -429,7 +429,10 @@ void() Rune_Camo =
     {
         self.runevar = 1;
     }
-    else { self.runevar = 0; }
+    else
+    {
+        self.runevar = 0;
+    }
 };
 
 void() Rune_Jump =

@@ -104,7 +104,9 @@ void()	knight_runatk1	= [	$runattack1,		knight_runatk2	]
         sound (self, CHAN_WEAPON, "knight/sword2.wav", 1, ATTN_NORM);
     }
     else
-    { sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM); }
+    {
+        sound (self, CHAN_WEAPON, "knight/sword1.wav", 1, ATTN_NORM);
+    }
     ai_charge (20);
 };
 void()	knight_runatk2	= [	$runattack2,	knight_runatk3	] {ai_charge_side();};
@@ -253,7 +255,9 @@ void() knight_die =
         knight_die1 ();
     }
     else
-    { knight_dieb1 (); }
+    {
+        knight_dieb1 ();
+    }
 };
 
 
