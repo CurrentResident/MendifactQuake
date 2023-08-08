@@ -691,7 +691,7 @@ void() MOTD =
         //centerprint(self,"Aòôéæáãô Qõáëå 2.1\n€ƒƒƒƒƒƒƒƒ‚\nCollect a rune, get an ability!\n\nIMPULSE “’’ MUST BE BOUND.\nIMPULSE ›› shows your current rune.\nIMPULSE ›š deactivates your rune.\nƒƒ\nWritten by ÓéÎÇÅ\nE-mail: singe@ix.netcom.com\n€ƒƒƒƒƒƒƒƒ‚");
         centerprint (self, "Artifact Quake  -\nby Singe <singe@ix.netcom.com> \n\nthis server is run and modified by \nMendicant-  jjt@umr.edu");
     }
-    else if (self.motd_count <= 6)
+    else if (self.motd_count <= 8)
     {
         centerprint (self, "Bind these impulses:\n\nimpulse 100 - Use rune               \n\nimpulse 99  - Show rune              \n\nimpulse 98  - Drop rune              \n\nimpulse 97  - Show this message again");
     }
